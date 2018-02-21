@@ -1,5 +1,5 @@
-import { RSQLOrderByList } from '../src/rsql-order-by-list';
-import { RSQLOrderByExpression } from '../src/rsql-order-by-expression';
+import { RSQLOrderByList } from '../src/files/rsql-order-by-list';
+import { RSQLOrderByExpression } from '../src/files/rsql-order-by-expression';
 
 describe('RSQLOrderByList', () => {
   it('should create a single order by clause via an new RSQLOrderByExpression', () => {

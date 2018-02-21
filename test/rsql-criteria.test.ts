@@ -1,7 +1,7 @@
-import RSQLCriteria from '../src/rsql-criteria';
-import { RSQLFilterList } from '../src/rsql-filter-list';
-import { RSQLFilterExpression } from '../src/rsql-filter-expression';
-import { Operators } from '../src/rsql-filter-operators';
+import { RSQLCriteria } from '../src/files/rsql-criteria';
+import { RSQLFilterList } from '../src/files/rsql-filter-list';
+import { RSQLFilterExpression } from '../src/files/rsql-filter-expression';
+import { Operators } from '../src/files/rsql-filter-operators';
 
 describe('RSQLCriteria test', () => {
   it('works if true is truthy', () => {
@@ -19,9 +19,7 @@ describe('RSQLCriteria test', () => {
 
   it('should build a where clause when filters are passed in', () => {
     let criteria = new RSQLCriteria();
-    criteria.filters.add(
-      new RSQLFilterExpression('code', Operators.Equal, 'abc')
-    );
+    criteria.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$where=code=="abc"');
   });
 
@@ -34,9 +32,7 @@ describe('RSQLCriteria test', () => {
   it('should build a combined string of filters and order by clauses', () => {
     let criteria = new RSQLCriteria();
     criteria.orderBy.add('code', 'asc');
-    criteria.filters.add(
-      new RSQLFilterExpression('code', Operators.Equal, 'abc')
-    );
+    criteria.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$where=code=="abc"&$orderBy=code asc');
   });
 
@@ -48,9 +44,7 @@ describe('RSQLCriteria test', () => {
 
   it('should build a where clause when filters are passed in with a customized where keyword', () => {
     let criteria = new RSQLCriteria('$filter');
-    criteria.filters.add(
-      new RSQLFilterExpression('code', Operators.Equal, 'abc')
-    );
+    criteria.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$filter=code=="abc"');
   });
 });

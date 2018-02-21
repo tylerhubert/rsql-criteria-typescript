@@ -1,8 +1,8 @@
 {
   "name": "rsql-criteria-typescript",
   "version": "0.0.0-development",
-  "description": "",
-  "keywords": [],
+  "description": "RSQL Criteria Wrapper for Typescript projects.  Useful in building the rsql string for you.",
+  "keywords": ["RSQL", "Typescript", "Filter"],
   "main": "dist/rsql-criteria.umd.js",
   "module": "dist/rsql-criteria.es5.js",
   "typings": "dist/types/rsql-criteria.d.ts",

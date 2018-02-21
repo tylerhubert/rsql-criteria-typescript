@@ -1,10 +1,7 @@
 import { RSQLFilterList } from './rsql-filter-list';
 import { RSQLOrderByList } from './rsql-order-by-list';
 
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
-// ...
-export default class RSQLCriteria {
+export class RSQLCriteria {
   public orderBy: RSQLOrderByList;
   public filters: RSQLFilterList;
 

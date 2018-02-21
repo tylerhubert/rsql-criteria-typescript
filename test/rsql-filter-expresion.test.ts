@@ -1,5 +1,5 @@
-import { RSQLFilterExpression } from '../src/rsql-filter-expression';
-import { Operators } from '../src/rsql-filter-operators';
+import { RSQLFilterExpression } from '../src/files/rsql-filter-expression';
+import { Operators } from '../src/files/rsql-filter-operators';
 
 describe('RSQLFilterExpression', () => {
   it('should handle the Equals operator', () => {
@@ -35,11 +35,7 @@ describe('RSQLFilterExpression', () => {
   });
 
   it('should handle the GreaterThanEqualTo operator', () => {
-    let ex = new RSQLFilterExpression(
-      'code',
-      Operators.GreaterThanEqualTo,
-      123
-    );
+    let ex = new RSQLFilterExpression('code', Operators.GreaterThanEqualTo, 123);
     expect(ex.build()).toEqual('code>=123');
   });
 

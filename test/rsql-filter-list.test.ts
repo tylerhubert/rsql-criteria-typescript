@@ -1,6 +1,6 @@
-import { RSQLFilterList } from '../src/rsql-filter-list';
-import { RSQLFilterExpression } from '../src/rsql-filter-expression';
-import { Operators } from '../src/rsql-filter-operators';
+import { RSQLFilterList } from '../src/files/rsql-filter-list';
+import { RSQLFilterExpression } from '../src/files/rsql-filter-expression';
+import { Operators } from '../src/files/rsql-filter-operators';
 
 describe('RSQLFilterList', () => {
   it('should create a string with just one filter expression in it', () => {
@@ -12,18 +12,14 @@ describe('RSQLFilterList', () => {
   it('should bring together two expression with an AND by default', () => {
     let list = new RSQLFilterList();
     list.add(new RSQLFilterExpression('code', Operators.Equal, '123'));
-    list.add(
-      new RSQLFilterExpression('description', Operators.NotEqual, '456')
-    );
+    list.add(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual('(code=="123" and description!="456")');
   });
 
   it('should bring together two expression with an OR when set', () => {
     let list = new RSQLFilterList('or');
     list.add(new RSQLFilterExpression('code', Operators.Equal, '123'));
-    list.add(
-      new RSQLFilterExpression('description', Operators.NotEqual, '456')
-    );
+    list.add(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual('(code=="123" or description!="456")');
   });
 
@@ -31,9 +27,7 @@ describe('RSQLFilterList', () => {
     let list = new RSQLFilterList();
     list.setCombineOperator('or');
     list.add(new RSQLFilterExpression('code', Operators.Equal, '123'));
-    list.add(
-      new RSQLFilterExpression('description', Operators.NotEqual, '456')
-    );
+    list.add(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual('(code=="123" or description!="456")');
   });
 
