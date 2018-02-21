@@ -17,8 +17,8 @@ export class RSQLFilterExpression {
   }
 
   /**
-     * Builds the individual filter expression into the proper format.
-     */
+   * Builds the individual filter expression into the proper format.
+   */
   public build(): string {
     let filterString = '';
     // convert the value into an appropriate string.

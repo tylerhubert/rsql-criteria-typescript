@@ -19,11 +19,11 @@ export class RSQLFilterList {
     this.filters.push(filter);
   }
 
-  /** 
-     * Builds the filter string for this list of filters.
-     * If there is more than one filter expression, it puts 
-     * parenthesis around the expression.
-    */
+  /**
+   * Builds the filter string for this list of filters.
+   * If there is more than one filter expression, it puts
+   * parenthesis around the expression.
+   */
   public build(): string {
     let filterString = '';
     let includeParens = this.filters.length > 1;
