@@ -23,6 +23,22 @@ export class RSQLCriteria {
   }
 
   /**
+   * Brings together the two criteria filters, ignoring the order by and pagination
+   * from the passed in criteria.  Only keeps it from the original RSQLCriteria.
+   */
+  public and(criteria2: RSQLCriteria): void {
+    this.filters.and(criteria2.filters);
+  }
+
+  /**
+   * Brings together the two criteria filters, ignoring the order by and pagination
+   * from the passed in criteria.  Only keeps it from the original RSQLCriteria.
+   */
+  public or(criteria2: RSQLCriteria): void {
+    this.filters.or(criteria2.filters);
+  }
+
+  /**
    * Builds the query string that will be needed to send down to the server side API.
    * Combines the keywords with their appropriate clauses to create the string.
    */
