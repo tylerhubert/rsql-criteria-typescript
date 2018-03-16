@@ -47,4 +47,49 @@ describe('RSQLCriteria test', () => {
     criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$filter=code=="abc"');
   });
+
+  it('should add in pageSize when that has been set.', () => {
+    let criteria = new RSQLCriteria();
+    criteria.pageSize = 10;
+    expect(criteria.build()).toEqual('$pageSize=10&$includeTotalCount=true');
+  });
+
+  it('should not add in totalCount when that has been turned off.', () => {
+    let criteria = new RSQLCriteria();
+    criteria.pageSize = 10;
+    criteria.includeTotalCount = false;
+    expect(criteria.build()).toEqual('$pageSize=10');
+  });
+
+  it('should add in pageNumber when that has been set.', () => {
+    let criteria = new RSQLCriteria();
+    criteria.pageNumber = 3;
+    expect(criteria.build()).toEqual('$pageNumber=3');
+  });
+
+  it('should include all pagination parts when they are set.', () => {
+    let criteria = new RSQLCriteria();
+    criteria.pageSize = 10;
+    criteria.pageNumber = 2;
+    expect(criteria.build()).toEqual('$pageSize=10&$includeTotalCount=true&$pageNumber=2');
+  });
+
+  it('should override the pageSizeKeyword when that has been set.', () => {
+    let criteria = new RSQLCriteria('$where', '$orderBy', '$take');
+    criteria.pageSize = 10;
+    expect(criteria.build()).toEqual('$take=10&$includeTotalCount=true');
+  });
+
+  it('should override the includeTotalCountKeyword when that has been set.', () => {
+    let criteria = new RSQLCriteria('$where', '$orderBy', '$take', 'total');
+    criteria.pageSize = 10;
+    expect(criteria.build()).toEqual('$take=10&total=true');
+  });
+
+  it('should override the includeTotalCountKeyword when that has been set.', () => {
+    let criteria = new RSQLCriteria('$where', '$orderBy', '$take', 'total', '$skip');
+    criteria.pageSize = 10;
+    criteria.pageNumber = 2;
+    expect(criteria.build()).toEqual('$take=10&total=true&$skip=2');
+  });
 });
