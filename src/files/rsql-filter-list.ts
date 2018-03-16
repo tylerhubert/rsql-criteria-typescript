@@ -1,22 +1,20 @@
 import { RSQLFilterExpression } from './rsql-filter-expression';
 
 export class RSQLFilterList {
-  private filters: Array<RSQLFilterExpression | RSQLFilterList>;
+  private andList: Array<RSQLFilterExpression | RSQLFilterList>;
+  private orList: Array<RSQLFilterExpression | RSQLFilterList>;
 
-  constructor(private combineOperator: 'and' | 'or' = 'and') {
-    this.filters = [];
+  constructor() {
+    this.andList = [];
+    this.orList = [];
   }
 
-  public setCombineOperator(combineOperator: 'and' | 'or'): void {
-    this.combineOperator = combineOperator;
+  public and(filter: RSQLFilterExpression | RSQLFilterList) {
+    this.andList.push(filter);
   }
 
-  public getCombineOperator(): 'and' | 'or' {
-    return this.combineOperator;
-  }
-
-  public add(filter: RSQLFilterExpression | RSQLFilterList) {
-    this.filters.push(filter);
+  public or(filter: RSQLFilterExpression | RSQLFilterList) {
+    this.orList.push(filter);
   }
 
   /**
@@ -26,14 +24,21 @@ export class RSQLFilterList {
    */
   public build(): string {
     let filterString = '';
-    let includeParens = this.filters.length > 1;
+    let includeParens = this.andList.length + this.orList.length > 1;
     let includeConnector = false;
     if (includeParens) {
       filterString += '(';
     }
-    for (let filter of this.filters) {
+    for (let filter of this.andList) {
       if (includeConnector) {
-        filterString += ` ${this.combineOperator} `;
+        filterString += ' and ';
+      }
+      filterString += filter.build();
+      includeConnector = true;
+    }
+    for (let filter of this.orList) {
+      if (includeConnector) {
+        filterString += ' or ';
       }
       filterString += filter.build();
       includeConnector = true;

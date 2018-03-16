@@ -84,6 +84,16 @@ describe('RSQLFilterExpression', () => {
     expect(ex.build()).toEqual('code=in=("123","456")');
   });
 
+  it('should handle the In operator with only numbers', () => {
+    let ex = new RSQLFilterExpression('code', Operators.In, [123, 456]);
+    expect(ex.build()).toEqual('code=in=(123,456)');
+  });
+
+  it('should handle the In operator with numbers and strings', () => {
+    let ex = new RSQLFilterExpression('code', Operators.In, ['123', 456]);
+    expect(ex.build()).toEqual('code=in=("123",456)');
+  });
+
   it('should handle the NotIn operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.NotIn, ['123', '456']);
     expect(ex.build()).toEqual('code=out=("123","456")');

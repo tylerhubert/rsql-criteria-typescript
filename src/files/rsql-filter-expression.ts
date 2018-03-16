@@ -4,12 +4,12 @@ import { Operators } from './rsql-filter-operators';
 export class RSQLFilterExpression {
   public field: string;
   public operator: Operators;
-  public value: string | Array<string> | Date | number | undefined;
+  public value: string | Array<string | number> | Date | number | undefined;
 
   constructor(
     field: string,
     operator: Operators,
-    value: string | Array<string> | Date | number | undefined
+    value: string | Array<string | number> | Date | number | undefined
   ) {
     this.field = field;
     this.operator = operator;
@@ -30,7 +30,13 @@ export class RSQLFilterExpression {
       valueString = this.value.toString();
     }
     if (this.value instanceof Array) {
-      let quotedValues = this.value.map(i => this.quote(i));
+      let quotedValues = this.value.map(i => {
+        if (isNumber(i)) {
+          return i;
+        } else {
+          return this.quote(i);
+        }
+      });
       valueString = quotedValues.join(',');
     }
     if (this.value instanceof Date) {

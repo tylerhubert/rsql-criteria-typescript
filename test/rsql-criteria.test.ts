@@ -19,7 +19,7 @@ describe('RSQLCriteria test', () => {
 
   it('should build a where clause when filters are passed in', () => {
     let criteria = new RSQLCriteria();
-    criteria.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
+    criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$where=code=="abc"');
   });
 
@@ -32,7 +32,7 @@ describe('RSQLCriteria test', () => {
   it('should build a combined string of filters and order by clauses', () => {
     let criteria = new RSQLCriteria();
     criteria.orderBy.add('code', 'asc');
-    criteria.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
+    criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$where=code=="abc"&$orderBy=code asc');
   });
 
@@ -44,7 +44,7 @@ describe('RSQLCriteria test', () => {
 
   it('should build a where clause when filters are passed in with a customized where keyword', () => {
     let criteria = new RSQLCriteria('$filter');
-    criteria.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
+    criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual('$filter=code=="abc"');
   });
 });
