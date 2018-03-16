@@ -1,6 +1,23 @@
 import { RSQLFilterList, Operators, RSQLFilterExpression } from '..';
 import { RSQLFilter, RSQLColumn, RSQLCompleteExpression } from './rsql-expression-parts';
 
+/**
+ * Allows for the building of RSQLFilterExpressions in a readable way.
+ *
+ * @example
+ * let builder: RSQLFilter = new RSQLFilterBuilder();
+ * let list = builder.column('blah').equalTo('123').toList();
+ * let queryStringPart = list.build();
+ * // returns blah=="123"
+ *
+ * @example
+ * let rsql: RSQLCriteria = new RSQLCriteria();
+ * let builder: RSQLFilter = new RSQLFilterBuilder();
+ * rsql.filters.and(builder.column('blah').equalTo('123')
+ *                     .or().column('test').equalTo('456').toList());
+ * rsql.build();
+ * // returns $where=(blah=="123" or test=="456")
+ */
 export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteExpression {
   private filters: RSQLFilterList = new RSQLFilterList();
   private columnName: string;
@@ -14,10 +31,18 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     this.value = undefined;
   }
 
+  /**
+   * Start of the Filter Expression
+   * @param columnName name of the column you would like to filter on
+   */
   column(columnName: string): RSQLColumn {
     this.columnName = columnName;
     return this;
   }
+
+  /**
+   * Reset the RSQLFilterBuilder to its original state.
+   */
   clear(): void {
     this.filters = new RSQLFilterList();
     this.columnName = '';
@@ -122,6 +147,10 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     return this;
   }
 
+  /**
+   * Returns the RSQLFilterList instance that this builder has been adding things to.
+   * This can be added to other lists or set as the filters on the RSQLCriteria class.
+   */
   toList(): RSQLFilterList {
     this.addToList(new RSQLFilterExpression(this.columnName, this.operator, this.value));
     return this.filters;

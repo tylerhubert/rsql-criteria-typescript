@@ -6,21 +6,25 @@ describe('RSQLFilterList', () => {
   it('should create a string with just one filter expression in it', () => {
     let list = new RSQLFilterList();
     list.and(new RSQLFilterExpression('code', Operators.Equal, '123'));
-    expect(list.build()).toEqual('code=="123"');
+    expect(list.build()).toEqual(`code==${encodeURIComponent('"123"')}`);
   });
 
   it('should bring together two expression with an AND by default', () => {
     let list = new RSQLFilterList();
     list.and(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.and(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
-    expect(list.build()).toEqual('(code=="123" and description!="456")');
+    expect(list.build()).toEqual(
+      `(code==${encodeURIComponent('"123"')} and description!=${encodeURIComponent('"456"')})`
+    );
   });
 
   it('should bring together two expression with an OR', () => {
     let list = new RSQLFilterList();
     list.or(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.or(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
-    expect(list.build()).toEqual('(code=="123" or description!="456")');
+    expect(list.build()).toEqual(
+      `(code==${encodeURIComponent('"123"')} or description!=${encodeURIComponent('"456"')})`
+    );
   });
 
   it('should bring together two lists with an OR when that is stated', () => {
@@ -34,7 +38,11 @@ describe('RSQLFilterList', () => {
     list.or(ex1);
     list.or(ex2);
     expect(list.build()).toEqual(
-      '((firstName=="John" and lastName=="Doe") or (firstName=="Jane" and lastName=="Deer"))'
+      `((firstName==${encodeURIComponent('"John"')} and lastName==${encodeURIComponent(
+        '"Doe"'
+      )}) or (firstName==${encodeURIComponent('"Jane"')} and lastName==${encodeURIComponent(
+        '"Deer"'
+      )}))`
     );
   });
 
@@ -45,7 +53,9 @@ describe('RSQLFilterList', () => {
     list.or(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.or(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      '(firstName=="abc" and lastName=="def" or code=="123" or description!="456")'
+      `(firstName==${encodeURIComponent('"abc"')} and lastName==${encodeURIComponent(
+        '"def"'
+      )} or code==${encodeURIComponent('"123"')} or description!=${encodeURIComponent('"456"')})`
     );
   });
 });

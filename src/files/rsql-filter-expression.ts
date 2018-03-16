@@ -30,11 +30,11 @@ export class RSQLFilterExpression {
       valueString = this.value.toString();
     }
     if (this.value instanceof Array) {
-      let quotedValues = this.value.map(i => {
+      let quotedValues = this.value.filter(i => i !== undefined).map(i => {
         if (isNumber(i)) {
           return i;
         } else {
-          return this.quote(i);
+          return encodeURIComponent(this.quote(i));
         }
       });
       valueString = quotedValues.join(',');
@@ -50,16 +50,10 @@ export class RSQLFilterExpression {
     filterString += this.field;
     switch (this.operator) {
       case Operators.Equal:
-        filterString += '==' + this.quote(valueString);
+        filterString += '==' + encodeURIComponent(this.quote(valueString));
         break;
       case Operators.NotEqual:
-        filterString += '!=' + this.quote(valueString);
-        break;
-      case Operators.IsNull:
-        filterString += '==null';
-        break;
-      case Operators.IsNotNull:
-        filterString += '!=null';
+        filterString += '!=' + encodeURIComponent(this.quote(valueString));
         break;
       case Operators.GreaterThan:
         filterString += `>${valueString}`;
@@ -74,16 +68,22 @@ export class RSQLFilterExpression {
         filterString += `<=${valueString}`;
         break;
       case Operators.StartsWith:
-        filterString += '==' + this.quote(`${valueString}*`);
+        filterString += '==' + encodeURIComponent(this.quote(`${valueString}*`));
         break;
       case Operators.EndsWith:
-        filterString += '==' + this.quote(`*${valueString}`);
+        filterString += '==' + encodeURIComponent(this.quote(`*${valueString}`));
         break;
       case Operators.Contains:
-        filterString += '==' + this.quote(`*${valueString}*`);
+        filterString += '==' + encodeURIComponent(this.quote(`*${valueString}*`));
         break;
       case Operators.DoesNotContain:
-        filterString += '!=' + this.quote(`*${valueString}*`);
+        filterString += '!=' + encodeURIComponent(this.quote(`*${valueString}*`));
+        break;
+      case Operators.In:
+        filterString += '=in=(' + valueString + ')';
+        break;
+      case Operators.NotIn:
+        filterString += '=out=(' + valueString + ')';
         break;
       case Operators.IsEmpty:
         filterString += '==""';
@@ -91,11 +91,12 @@ export class RSQLFilterExpression {
       case Operators.IsNotEmpty:
         filterString += '!=""';
         break;
-      case Operators.In:
-        filterString += '=in=(' + valueString + ')';
+      case Operators.IsNull:
+        filterString += '==null';
         break;
-      case Operators.NotIn:
-        filterString += '=out=(' + valueString + ')';
+      case Operators.IsNotNull:
+        filterString += '!=null';
+        break;
     }
 
     return filterString;

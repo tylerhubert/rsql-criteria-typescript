@@ -4,12 +4,12 @@ import { Operators } from '../src/files/rsql-filter-operators';
 describe('RSQLFilterExpression', () => {
   it('should handle the Equals operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.Equal, '123');
-    expect(ex.build()).toEqual('code=="123"');
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"123"')}`);
   });
 
   it('should handle the NotEquals operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.NotEqual, '123');
-    expect(ex.build()).toEqual('code!="123"');
+    expect(ex.build()).toEqual(`code!=${encodeURIComponent('"123"')}`);
   });
 
   it('should handle the IsNull operator', () => {
@@ -51,22 +51,22 @@ describe('RSQLFilterExpression', () => {
 
   it('should handle the StartsWith operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.StartsWith, '123');
-    expect(ex.build()).toEqual('code=="123*"');
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"123*"')}`);
   });
 
   it('should handle the EndsWith operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.EndsWith, '123');
-    expect(ex.build()).toEqual('code=="*123"');
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"*123"')}`);
   });
 
   it('should handle the Contains operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.Contains, '123');
-    expect(ex.build()).toEqual('code=="*123*"');
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"*123*"')}`);
   });
 
   it('should handle the DoesNotContain operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.DoesNotContain, '123');
-    expect(ex.build()).toEqual('code!="*123*"');
+    expect(ex.build()).toEqual(`code!=${encodeURIComponent('"*123*"')}`);
   });
 
   it('should handle the IsEmpty operator', () => {
@@ -81,7 +81,9 @@ describe('RSQLFilterExpression', () => {
 
   it('should handle the In operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.In, ['123', '456']);
-    expect(ex.build()).toEqual('code=in=("123","456")');
+    expect(ex.build()).toEqual(
+      `code=in=(${encodeURIComponent('"123"')},${encodeURIComponent('"456"')})`
+    );
   });
 
   it('should handle the In operator with only numbers', () => {
@@ -91,11 +93,13 @@ describe('RSQLFilterExpression', () => {
 
   it('should handle the In operator with numbers and strings', () => {
     let ex = new RSQLFilterExpression('code', Operators.In, ['123', 456]);
-    expect(ex.build()).toEqual('code=in=("123",456)');
+    expect(ex.build()).toEqual(`code=in=(${encodeURIComponent('"123"')},456)`);
   });
 
   it('should handle the NotIn operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.NotIn, ['123', '456']);
-    expect(ex.build()).toEqual('code=out=("123","456")');
+    expect(ex.build()).toEqual(
+      `code=out=(${encodeURIComponent('"123"')},${encodeURIComponent('"456"')})`
+    );
   });
 });

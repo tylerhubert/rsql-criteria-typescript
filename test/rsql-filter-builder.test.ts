@@ -8,7 +8,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual('blah=="123"');
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
   });
 
   it('should build a single filter properly by casting the result of the RSQLFilterBuilder to the RSQLFilter interface', () => {
@@ -17,7 +17,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual('blah=="123"');
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
   });
 
   it('should build a set of filters with an and', () => {
@@ -29,7 +29,9 @@ describe('RSQLFilterBuilder', () => {
       .column('name')
       .equalTo('John')
       .toList();
-    expect(list.build()).toEqual('(blah=="123" and name=="John")');
+    expect(list.build()).toEqual(
+      `(blah==${encodeURIComponent('"123"')} and name==${encodeURIComponent('"John"')})`
+    );
   });
 
   it('should build a set of filters with an or', () => {
@@ -41,7 +43,9 @@ describe('RSQLFilterBuilder', () => {
       .column('name')
       .equalTo('John')
       .toList();
-    expect(list.build()).toEqual('(blah=="123" or name=="John")');
+    expect(list.build()).toEqual(
+      `(blah==${encodeURIComponent('"123"')} or name==${encodeURIComponent('"John"')})`
+    );
   });
 
   it('should handle the clear function', () => {
@@ -53,17 +57,19 @@ describe('RSQLFilterBuilder', () => {
       .column('name')
       .equalTo('John')
       .toList();
-    expect(list.build()).toEqual('(blah=="123" or name=="John")');
+    expect(list.build()).toEqual(
+      `(blah==${encodeURIComponent('"123"')} or name==${encodeURIComponent('"John"')})`
+    );
 
     builder.clear();
     list = builder
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual('blah=="123"');
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
   });
 
-  it('should handle the clear function', () => {
+  it('should handle the clear function for complex functions', () => {
     let builder: RSQLFilter = new RSQLFilterBuilder();
     let list = builder
       .column('blah')
@@ -72,7 +78,9 @@ describe('RSQLFilterBuilder', () => {
       .column('name')
       .equalTo('John')
       .toList();
-    expect(list.build()).toEqual('(blah=="123" or name=="John")');
+    expect(list.build()).toEqual(
+      `(blah==${encodeURIComponent('"123"')} or name==${encodeURIComponent('"John"')})`
+    );
 
     builder.clear();
     list = builder
@@ -82,7 +90,9 @@ describe('RSQLFilterBuilder', () => {
       .column('name2')
       .equalTo('John')
       .toList();
-    expect(list.build()).toEqual('(blah2=="123" or name2=="John")');
+    expect(list.build()).toEqual(
+      `(blah2==${encodeURIComponent('"123"')} or name2==${encodeURIComponent('"John"')})`
+    );
   });
 
   it('should build the proper string for the equalTo function', () => {
@@ -91,7 +101,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual('blah=="123"');
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
   });
 
   it('should build the proper string for the notEqualTo function', () => {
@@ -100,7 +110,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .notEqualTo('123')
       .toList();
-    expect(list.build()).toEqual('blah!="123"');
+    expect(list.build()).toEqual(`blah!=${encodeURIComponent('"123"')}`);
   });
 
   it('should build the proper string for the contains function', () => {
@@ -109,7 +119,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .contains('123')
       .toList();
-    expect(list.build()).toEqual('blah=="*123*"');
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"*123*"')}`);
   });
 
   it('should build the proper string for the doesNotContains function', () => {
@@ -118,7 +128,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .doesNotContain('123')
       .toList();
-    expect(list.build()).toEqual('blah!="*123*"');
+    expect(list.build()).toEqual(`blah!=${encodeURIComponent('"*123*"')}`);
   });
 
   it('should build the proper string for the greaterThan function for a number', () => {
@@ -163,7 +173,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .in([123, 'abc'])
       .toList();
-    expect(list.build()).toEqual('blah=in=(123,"abc")');
+    expect(list.build()).toEqual(`blah=in=(123,${encodeURIComponent('"abc"')})`);
   });
 
   it('should build the proper string for the notIn function', () => {
@@ -172,7 +182,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .notIn(['abc', 123])
       .toList();
-    expect(list.build()).toEqual('blah=out=("abc",123)');
+    expect(list.build()).toEqual(`blah=out=(${encodeURIComponent('"abc"')},123)`);
   });
 
   it('should build the proper string for the isNull function', () => {

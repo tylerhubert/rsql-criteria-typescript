@@ -20,7 +20,7 @@ describe('RSQLCriteria test', () => {
   it('should build a where clause when filters are passed in', () => {
     let criteria = new RSQLCriteria();
     criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
-    expect(criteria.build()).toEqual('$where=code=="abc"');
+    expect(criteria.build()).toEqual(`$where=code==${encodeURIComponent('"abc"')}`);
   });
 
   it('should build an orderBy clause when order by expressions are passed in', () => {
@@ -33,7 +33,9 @@ describe('RSQLCriteria test', () => {
     let criteria = new RSQLCriteria();
     criteria.orderBy.add('code', 'asc');
     criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
-    expect(criteria.build()).toEqual('$where=code=="abc"&$orderBy=code asc');
+    expect(criteria.build()).toEqual(
+      `$where=code==${encodeURIComponent('"abc"')}&$orderBy=code asc`
+    );
   });
 
   it('should build an orderBy clause when order by expressions are passed in with an overridden orderBy keyword', () => {
@@ -45,7 +47,7 @@ describe('RSQLCriteria test', () => {
   it('should build a where clause when filters are passed in with a customized where keyword', () => {
     let criteria = new RSQLCriteria('$filter');
     criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
-    expect(criteria.build()).toEqual('$filter=code=="abc"');
+    expect(criteria.build()).toEqual(`$filter=code==${encodeURIComponent('"abc"')}`);
   });
 
   it('should add in pageSize when that has been set.', () => {
