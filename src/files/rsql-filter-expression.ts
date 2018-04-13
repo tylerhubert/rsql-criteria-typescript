@@ -56,16 +56,16 @@ export class RSQLFilterExpression {
         filterString += '!=' + encodeURIComponent(this.quote(valueString));
         break;
       case Operators.GreaterThan:
-        filterString += `>${valueString}`;
+        filterString += encodeURIComponent('>') + valueString;
         break;
       case Operators.GreaterThanEqualTo:
-        filterString += `>=${valueString}`;
+        filterString += encodeURIComponent('>=') + valueString;
         break;
       case Operators.LessThan:
-        filterString += `<${valueString}`;
+        filterString += encodeURIComponent('<') + valueString;
         break;
       case Operators.LessThanEqualTo:
-        filterString += `<=${valueString}`;
+        filterString += encodeURIComponent('<=') + valueString;
         break;
       case Operators.StartsWith:
         filterString += '==' + encodeURIComponent(this.quote(`${valueString}*`));
@@ -86,10 +86,10 @@ export class RSQLFilterExpression {
         filterString += '=out=(' + valueString + ')';
         break;
       case Operators.IsEmpty:
-        filterString += '==""';
+        filterString += '==' + encodeURIComponent('""');
         break;
       case Operators.IsNotEmpty:
-        filterString += '!=""';
+        filterString += '!=' + encodeURIComponent('""');
         break;
       case Operators.IsNull:
         filterString += '==null';

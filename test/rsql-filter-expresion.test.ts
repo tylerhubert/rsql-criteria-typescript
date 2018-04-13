@@ -24,29 +24,29 @@ describe('RSQLFilterExpression', () => {
 
   it('should handle the GreaterThan operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.GreaterThan, 123);
-    expect(ex.build()).toEqual('code>123');
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}123`);
   });
 
   it('should handle the GreaterThan operator for a date object', () => {
     // dates months are 0 indexed
     let today = new Date(2018, 10, 25);
     let ex = new RSQLFilterExpression('code', Operators.GreaterThan, today);
-    expect(ex.build()).toEqual('code>2018-11-25');
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-11-25`);
   });
 
   it('should handle the GreaterThanEqualTo operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.GreaterThanEqualTo, 123);
-    expect(ex.build()).toEqual('code>=123');
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>=')}123`);
   });
 
   it('should handle the LessThan operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.LessThan, 123);
-    expect(ex.build()).toEqual('code<123');
+    expect(ex.build()).toEqual(`code${encodeURIComponent('<')}123`);
   });
 
   it('should handle the LessThanEqualTo operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.LessThanEqualTo, 123);
-    expect(ex.build()).toEqual('code<=123');
+    expect(ex.build()).toEqual(`code${encodeURIComponent('<=')}123`);
   });
 
   it('should handle the StartsWith operator', () => {
@@ -71,12 +71,12 @@ describe('RSQLFilterExpression', () => {
 
   it('should handle the IsEmpty operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.IsEmpty, '123');
-    expect(ex.build()).toEqual('code==""');
+    expect(ex.build()).toEqual('code==%22%22');
   });
 
   it('should handle the IsNotEmpty operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.IsNotEmpty, '123');
-    expect(ex.build()).toEqual('code!=""');
+    expect(ex.build()).toEqual('code!=%22%22');
   });
 
   it('should handle the In operator', () => {

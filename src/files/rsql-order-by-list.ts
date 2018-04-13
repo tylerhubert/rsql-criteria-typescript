@@ -21,7 +21,9 @@ export class RSQLOrderByList {
     let includeConnector = false;
     if (this.orderByList.length > 0) {
       for (let o of this.orderByList) {
-        str += (includeConnector ? ', ' : '') + `${o.field} ${o.direction}`;
+        str +=
+          (includeConnector ? encodeURIComponent(', ') : '') +
+          encodeURIComponent(`${o.field} ${o.direction}`);
         includeConnector = true;
       }
     }

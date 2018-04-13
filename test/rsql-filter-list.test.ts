@@ -14,7 +14,9 @@ describe('RSQLFilterList', () => {
     list.and(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.and(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      `(code==${encodeURIComponent('"123"')} and description!=${encodeURIComponent('"456"')})`
+      `(code==${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' and '
+      )}description!=${encodeURIComponent('"456"')})`
     );
   });
 
@@ -23,7 +25,9 @@ describe('RSQLFilterList', () => {
     list.or(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.or(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      `(code==${encodeURIComponent('"123"')} or description!=${encodeURIComponent('"456"')})`
+      `(code==${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}description!=${encodeURIComponent('"456"')})`
     );
   });
 
@@ -38,11 +42,13 @@ describe('RSQLFilterList', () => {
     list.or(ex1);
     list.or(ex2);
     expect(list.build()).toEqual(
-      `((firstName==${encodeURIComponent('"John"')} and lastName==${encodeURIComponent(
-        '"Doe"'
-      )}) or (firstName==${encodeURIComponent('"Jane"')} and lastName==${encodeURIComponent(
-        '"Deer"'
-      )}))`
+      `((firstName==${encodeURIComponent('"John"')}${encodeURIComponent(
+        ' and '
+      )}lastName==${encodeURIComponent('"Doe"')})${encodeURIComponent(
+        ' or '
+      )}(firstName==${encodeURIComponent('"Jane"')}${encodeURIComponent(
+        ' and '
+      )}lastName==${encodeURIComponent('"Deer"')}))`
     );
   });
 
@@ -53,9 +59,13 @@ describe('RSQLFilterList', () => {
     list.or(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.or(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      `(firstName==${encodeURIComponent('"abc"')} and lastName==${encodeURIComponent(
-        '"def"'
-      )} or code==${encodeURIComponent('"123"')} or description!=${encodeURIComponent('"456"')})`
+      `(firstName==${encodeURIComponent('"abc"')}${encodeURIComponent(
+        ' and '
+      )}lastName==${encodeURIComponent('"def"')}${encodeURIComponent(
+        ' or '
+      )}code==${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}description!=${encodeURIComponent('"456"')})`
     );
   });
 });

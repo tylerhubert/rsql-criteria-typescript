@@ -31,14 +31,14 @@ export class RSQLFilterList {
     }
     for (let filter of this.andList) {
       if (includeConnector) {
-        filterString += ' and ';
+        filterString += encodeURIComponent(' and ');
       }
       filterString += filter.build();
       includeConnector = true;
     }
     for (let filter of this.orList) {
       if (includeConnector) {
-        filterString += ' or ';
+        filterString += encodeURIComponent(' or ');
       }
       filterString += filter.build();
       includeConnector = true;

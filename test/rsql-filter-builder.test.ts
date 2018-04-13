@@ -30,7 +30,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')} and name==${encodeURIComponent('"John"')})`
+      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' and '
+      )}name==${encodeURIComponent('"John"')})`
     );
   });
 
@@ -44,7 +46,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')} or name==${encodeURIComponent('"John"')})`
+      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(' or ')}name==${encodeURIComponent(
+        '"John"'
+      )})`
     );
   });
 
@@ -58,7 +62,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')} or name==${encodeURIComponent('"John"')})`
+      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(' or ')}name==${encodeURIComponent(
+        '"John"'
+      )})`
     );
 
     builder.clear();
@@ -79,7 +85,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')} or name==${encodeURIComponent('"John"')})`
+      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(' or ')}name==${encodeURIComponent(
+        '"John"'
+      )})`
     );
 
     builder.clear();
@@ -91,7 +99,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah2==${encodeURIComponent('"123"')} or name2==${encodeURIComponent('"John"')})`
+      `(blah2==${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}name2==${encodeURIComponent('"John"')})`
     );
   });
 
@@ -137,7 +147,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .greaterThan(123)
       .toList();
-    expect(list.build()).toEqual('blah>123');
+    expect(list.build()).toEqual(`blah${encodeURIComponent('>')}123`);
   });
 
   it('should build the proper string for the greaterThanOrEqualTo function', () => {
@@ -146,7 +156,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .greaterThanOrEqualTo('123')
       .toList();
-    expect(list.build()).toEqual('blah>=123');
+    expect(list.build()).toEqual(`blah${encodeURIComponent('>=')}123`);
   });
 
   it('should build the proper string for the lessThan function', () => {
@@ -155,7 +165,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .lessThan('123')
       .toList();
-    expect(list.build()).toEqual('blah<123');
+    expect(list.build()).toEqual(`blah${encodeURIComponent('<')}123`);
   });
 
   it('should build the proper string for the lessThanOrEqualTo function', () => {
@@ -164,7 +174,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .lessThanOrEqualTo('123')
       .toList();
-    expect(list.build()).toEqual('blah<=123');
+    expect(list.build()).toEqual(`blah${encodeURIComponent('<=')}123`);
   });
 
   it('should build the proper string for the in function', () => {
@@ -209,7 +219,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .isEmpty()
       .toList();
-    expect(list.build()).toEqual('blah==""');
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('""')}`);
   });
 
   it('should build the proper string for the isNotEmpty function', () => {
@@ -218,6 +228,6 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .isNotEmpty()
       .toList();
-    expect(list.build()).toEqual('blah!=""');
+    expect(list.build()).toEqual(`blah!=${encodeURIComponent('""')}`);
   });
 });

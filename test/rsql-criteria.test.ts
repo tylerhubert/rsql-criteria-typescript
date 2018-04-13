@@ -26,7 +26,7 @@ describe('RSQLCriteria test', () => {
   it('should build an orderBy clause when order by expressions are passed in', () => {
     let criteria = new RSQLCriteria();
     criteria.orderBy.add('code', 'asc');
-    expect(criteria.build()).toEqual('$orderBy=code asc');
+    expect(criteria.build()).toEqual(`$orderBy=${encodeURIComponent('code asc')}`);
   });
 
   it('should build a combined string of filters and order by clauses', () => {
@@ -34,14 +34,14 @@ describe('RSQLCriteria test', () => {
     criteria.orderBy.add('code', 'asc');
     criteria.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
     expect(criteria.build()).toEqual(
-      `$where=code==${encodeURIComponent('"abc"')}&$orderBy=code asc`
+      `$where=code==${encodeURIComponent('"abc"')}&$orderBy=${encodeURIComponent('code asc')}`
     );
   });
 
   it('should build an orderBy clause when order by expressions are passed in with an overridden orderBy keyword', () => {
     let criteria = new RSQLCriteria('$where', '$order');
     criteria.orderBy.add('code', 'asc');
-    expect(criteria.build()).toEqual('$order=code asc');
+    expect(criteria.build()).toEqual('$order=' + encodeURIComponent('code asc'));
   });
 
   it('should build a where clause when filters are passed in with a customized where keyword', () => {
@@ -107,9 +107,11 @@ describe('RSQLCriteria test', () => {
 
     criteria1.and(criteria2);
     expect(criteria1.build()).toEqual(
-      `$where=(code==${encodeURIComponent('"*a*"')} and description==${encodeURIComponent(
-        '"*b*"'
-      )})&$orderBy=code asc&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
+      `$where=(code==${encodeURIComponent('"*a*"')}${encodeURIComponent(
+        ' and '
+      )}description==${encodeURIComponent('"*b*"')})&$orderBy=${encodeURIComponent(
+        'code asc'
+      )}&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
     );
   });
 
@@ -125,9 +127,11 @@ describe('RSQLCriteria test', () => {
 
     criteria1.or(criteria2);
     expect(criteria1.build()).toEqual(
-      `$where=(code==${encodeURIComponent('"*a*"')} or description==${encodeURIComponent(
-        '"*b*"'
-      )})&$orderBy=code asc&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
+      `$where=(code==${encodeURIComponent('"*a*"')}${encodeURIComponent(
+        ' or '
+      )}description==${encodeURIComponent('"*b*"')})&$orderBy=${encodeURIComponent(
+        'code asc'
+      )}&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
     );
   });
 });
