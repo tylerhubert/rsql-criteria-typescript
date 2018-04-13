@@ -141,6 +141,24 @@ describe('RSQLFilterBuilder', () => {
     expect(list.build()).toEqual(`blah!=${encodeURIComponent('"*123*"')}`);
   });
 
+  it('should build the proper string for the startsWith function', () => {
+    let builder: RSQLFilter = new RSQLFilterBuilder();
+    let list = builder
+      .column('blah')
+      .startsWith('123')
+      .toList();
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123*"')}`);
+  });
+
+  it('should build the proper string for the endsWith function', () => {
+    let builder: RSQLFilter = new RSQLFilterBuilder();
+    let list = builder
+      .column('blah')
+      .endsWith('123')
+      .toList();
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"*123"')}`);
+  });
+
   it('should build the proper string for the greaterThan function for a number', () => {
     let builder: RSQLFilter = new RSQLFilterBuilder();
     let list = builder

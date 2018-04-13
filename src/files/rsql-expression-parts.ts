@@ -10,6 +10,8 @@ export interface RSQLColumn {
   notEqualTo(value: string | Date | number): RSQLCompleteExpression;
   contains(value: string | Date | number): RSQLCompleteExpression;
   doesNotContain(value: string | Date | number): RSQLCompleteExpression;
+  startsWith(value: string): RSQLCompleteExpression;
+  endsWith(value: string): RSQLCompleteExpression;
   greaterThan(value: string | Date | number): RSQLCompleteExpression;
   greaterThanOrEqualTo(value: string | Date | number): RSQLCompleteExpression;
   lessThan(value: string | Date | number): RSQLCompleteExpression;

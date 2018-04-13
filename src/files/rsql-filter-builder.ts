@@ -75,6 +75,18 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     return this;
   }
 
+  startsWith(value: string): RSQLCompleteExpression {
+    this.operator = Operators.StartsWith;
+    this.value = value;
+    return this;
+  }
+
+  endsWith(value: string): RSQLCompleteExpression {
+    this.operator = Operators.EndsWith;
+    this.value = value;
+    return this;
+  }
+
   greaterThan(value: string | number | Date): RSQLCompleteExpression {
     this.operator = Operators.GreaterThan;
     this.value = value;
