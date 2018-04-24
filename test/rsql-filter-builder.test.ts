@@ -112,6 +112,13 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('123')
       .toList();
     expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
+
+    builder.clear();
+    list = builder
+      .column('blah')
+      .equalTo(true)
+      .toList();
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"true"')}`);
   });
 
   it('should build the proper string for the notEqualTo function', () => {

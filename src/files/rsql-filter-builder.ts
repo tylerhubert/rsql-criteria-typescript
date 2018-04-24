@@ -22,7 +22,7 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
   private filters: RSQLFilterList = new RSQLFilterList();
   private columnName: string;
   private operator: Operators;
-  private value: string | Array<string | number> | Date | number | undefined;
+  private value: string | Array<string | number | boolean> | Date | number | boolean | undefined;
   private connector: 'and' | 'or' = 'and';
 
   constructor() {
@@ -51,13 +51,13 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     this.connector = 'and';
   }
 
-  equalTo(value: string | Date | number): RSQLCompleteExpression {
+  equalTo(value: string | Date | number | boolean): RSQLCompleteExpression {
     this.operator = Operators.Equal;
     this.value = value;
     return this;
   }
 
-  notEqualTo(value: string | number | Date): RSQLCompleteExpression {
+  notEqualTo(value: string | number | Date | boolean): RSQLCompleteExpression {
     this.operator = Operators.NotEqual;
     this.value = value;
     return this;
@@ -111,13 +111,13 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     return this;
   }
 
-  in(value: Array<string | number>): RSQLCompleteExpression {
+  in(value: Array<string | number | boolean>): RSQLCompleteExpression {
     this.operator = Operators.In;
     this.value = value;
     return this;
   }
 
-  notIn(value: Array<string | number>): RSQLCompleteExpression {
+  notIn(value: Array<string | number | boolean>): RSQLCompleteExpression {
     this.operator = Operators.NotIn;
     this.value = value;
     return this;

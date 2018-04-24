@@ -1,15 +1,15 @@
-import { isNumber, isString } from 'util';
+import { isBoolean, isNumber, isString } from 'util';
 import { Operators } from './rsql-filter-operators';
 
 export class RSQLFilterExpression {
   public field: string;
   public operator: Operators;
-  public value: string | Array<string | number> | Date | number | undefined;
+  public value: string | Array<string | number | boolean> | Date | number | boolean | undefined;
 
   constructor(
     field: string,
     operator: Operators,
-    value: string | Array<string | number> | Date | number | undefined
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined
   ) {
     this.field = field;
     this.operator = operator;
@@ -28,6 +28,9 @@ export class RSQLFilterExpression {
     }
     if (isNumber(this.value)) {
       valueString = this.value.toString();
+    }
+    if (isBoolean(this.value)) {
+      valueString = this.value ? 'true' : 'false';
     }
     if (this.value instanceof Array) {
       let quotedValues = this.value.filter(i => i !== undefined).map(i => {
@@ -102,7 +105,7 @@ export class RSQLFilterExpression {
     return filterString;
   }
 
-  private quote(value: string): string {
+  private quote(value: string | boolean): string {
     return `"${value}"`;
   }
 }

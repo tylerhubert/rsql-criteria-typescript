@@ -6,8 +6,8 @@ export interface RSQLFilter {
 }
 
 export interface RSQLColumn {
-  equalTo(value: string | Date | number): RSQLCompleteExpression;
-  notEqualTo(value: string | Date | number): RSQLCompleteExpression;
+  equalTo(value: string | Date | number | boolean): RSQLCompleteExpression;
+  notEqualTo(value: string | Date | number | boolean): RSQLCompleteExpression;
   contains(value: string | Date | number): RSQLCompleteExpression;
   doesNotContain(value: string | Date | number): RSQLCompleteExpression;
   startsWith(value: string): RSQLCompleteExpression;
@@ -16,8 +16,8 @@ export interface RSQLColumn {
   greaterThanOrEqualTo(value: string | Date | number): RSQLCompleteExpression;
   lessThan(value: string | Date | number): RSQLCompleteExpression;
   lessThanOrEqualTo(value: string | Date | number): RSQLCompleteExpression;
-  in(value: Array<string | number>): RSQLCompleteExpression;
-  notIn(value: Array<string | number>): RSQLCompleteExpression;
+  in(value: Array<string | number | boolean>): RSQLCompleteExpression;
+  notIn(value: Array<string | number | boolean>): RSQLCompleteExpression;
   isNull(): RSQLCompleteExpression;
   isNotNull(): RSQLCompleteExpression;
   isEmpty(): RSQLCompleteExpression;
