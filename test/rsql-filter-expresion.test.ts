@@ -10,6 +10,16 @@ describe('RSQLFilterExpression', () => {
     expect(ex.build()).toEqual(`code==${encodeURIComponent('"false"')}`);
   });
 
+  it('should handle the Equals operator when our value is null', () => {
+    let ex = new RSQLFilterExpression('code', Operators.Equal, null);
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"null"')}`);
+  });
+
+  it('should handle the NotEquals operator when our value is null', () => {
+    let ex = new RSQLFilterExpression('code', Operators.NotEqual, null);
+    expect(ex.build()).toEqual(`code!=${encodeURIComponent('"null"')}`);
+  });
+
   it('should handle the NotEquals operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.NotEqual, '123');
     expect(ex.build()).toEqual(`code!=${encodeURIComponent('"123"')}`);

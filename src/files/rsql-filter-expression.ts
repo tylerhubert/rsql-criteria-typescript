@@ -49,6 +49,9 @@ export class RSQLFilterExpression {
         this.value.getDate()
       ].join('-');
     }
+    if (this.value === null) {
+      valueString = 'null';
+    }
     // construct the filter string
     filterString += this.field;
     switch (this.operator) {
