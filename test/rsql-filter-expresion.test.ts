@@ -8,6 +8,15 @@ describe('RSQLFilterExpression', () => {
 
     ex = new RSQLFilterExpression('code', Operators.Equal, false);
     expect(ex.build()).toEqual(`code==${encodeURIComponent('"false"')}`);
+
+    ex = new RSQLFilterExpression('code', Operators.Equal, 'ab"c');
+    expect(ex.build()).toEqual(`code==%22ab%5C%22c%22`);
+
+    ex = new RSQLFilterExpression('code', Operators.Equal, 'ab\\c');
+    expect(ex.build()).toEqual(`code==%22ab%5C%5Cc%22`);
+
+    ex = new RSQLFilterExpression('code', Operators.Equal, 'ab\\"c');
+    expect(ex.build()).toEqual(`code==%22ab%5C%5C%5C%22c%22`);
   });
 
   it('should handle the Equals operator when our value is null', () => {
@@ -100,6 +109,9 @@ describe('RSQLFilterExpression', () => {
     expect(ex.build()).toEqual(
       `code=in=(${encodeURIComponent('"123"')},${encodeURIComponent('"456"')})`
     );
+
+    ex = new RSQLFilterExpression('code', Operators.In, ['ab"c', 'ab\\c', 'ab\\"c']);
+    expect(ex.build()).toEqual(`code=in=(%22ab%5C%22c%22,%22ab%5C%5Cc%22,%22ab%5C%5C%5C%22c%22)`);
   });
 
   it('should handle the In operator with only numbers', () => {
