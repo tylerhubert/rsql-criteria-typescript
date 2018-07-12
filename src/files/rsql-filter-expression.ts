@@ -25,6 +25,7 @@ export class RSQLFilterExpression {
     let valueString: string = '';
     if (isString(this.value)) {
       valueString = this.value;
+      valueString = valueString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     }
     if (isNumber(this.value)) {
       valueString = this.value.toString();
@@ -36,6 +37,9 @@ export class RSQLFilterExpression {
       let quotedValues = this.value.filter(i => i !== undefined).map(i => {
         if (isNumber(i)) {
           return i;
+        } else if (isString(i)) {
+          let val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+          return encodeURIComponent(this.quote(val));
         } else {
           return encodeURIComponent(this.quote(i));
         }
