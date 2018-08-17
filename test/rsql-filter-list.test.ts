@@ -6,7 +6,7 @@ describe('RSQLFilterList', () => {
   it('should create a string with just one filter expression in it', () => {
     let list = new RSQLFilterList();
     list.and(new RSQLFilterExpression('code', Operators.Equal, '123'));
-    expect(list.build()).toEqual(`code==${encodeURIComponent('"123"')}`);
+    expect(list.build()).toEqual(`code=in=${encodeURIComponent('"123"')}`);
   });
 
   it('should bring together two expression with an AND by default', () => {
@@ -14,7 +14,7 @@ describe('RSQLFilterList', () => {
     list.and(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.and(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      `(code==${encodeURIComponent('"123"')}${encodeURIComponent(
+      `(code=in=${encodeURIComponent('"123"')}${encodeURIComponent(
         ' and '
       )}description!=${encodeURIComponent('"456"')})`
     );
@@ -25,7 +25,7 @@ describe('RSQLFilterList', () => {
     list.or(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.or(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      `(code==${encodeURIComponent('"123"')}${encodeURIComponent(
+      `(code=in=${encodeURIComponent('"123"')}${encodeURIComponent(
         ' or '
       )}description!=${encodeURIComponent('"456"')})`
     );
@@ -42,13 +42,13 @@ describe('RSQLFilterList', () => {
     list.or(ex1);
     list.or(ex2);
     expect(list.build()).toEqual(
-      `((firstName==${encodeURIComponent('"John"')}${encodeURIComponent(
+      `((firstName=in=${encodeURIComponent('"John"')}${encodeURIComponent(
         ' and '
-      )}lastName==${encodeURIComponent('"Doe"')})${encodeURIComponent(
+      )}lastName=in=${encodeURIComponent('"Doe"')})${encodeURIComponent(
         ' or '
-      )}(firstName==${encodeURIComponent('"Jane"')}${encodeURIComponent(
+      )}(firstName=in=${encodeURIComponent('"Jane"')}${encodeURIComponent(
         ' and '
-      )}lastName==${encodeURIComponent('"Deer"')}))`
+      )}lastName=in=${encodeURIComponent('"Deer"')}))`
     );
   });
 
@@ -59,11 +59,11 @@ describe('RSQLFilterList', () => {
     list.or(new RSQLFilterExpression('code', Operators.Equal, '123'));
     list.or(new RSQLFilterExpression('description', Operators.NotEqual, '456'));
     expect(list.build()).toEqual(
-      `(firstName==${encodeURIComponent('"abc"')}${encodeURIComponent(
+      `(firstName=in=${encodeURIComponent('"abc"')}${encodeURIComponent(
         ' and '
-      )}lastName==${encodeURIComponent('"def"')}${encodeURIComponent(
+      )}lastName=in=${encodeURIComponent('"def"')}${encodeURIComponent(
         ' or '
-      )}code==${encodeURIComponent('"123"')}${encodeURIComponent(
+      )}code=in=${encodeURIComponent('"123"')}${encodeURIComponent(
         ' or '
       )}description!=${encodeURIComponent('"456"')})`
     );

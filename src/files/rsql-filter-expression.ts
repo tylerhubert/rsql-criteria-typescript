@@ -21,11 +21,13 @@ export class RSQLFilterExpression {
    */
   public build(): string {
     let filterString = '';
+    let shouldQuote = false;
     // convert the value into an appropriate string.
     let valueString: string = '';
     if (isString(this.value)) {
       valueString = this.value;
       valueString = valueString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      shouldQuote = true;
     }
     if (isNumber(this.value)) {
       valueString = this.value.toString();
@@ -52,6 +54,7 @@ export class RSQLFilterExpression {
         this.value.getMonth() + 1,
         this.value.getDate()
       ].join('-');
+      shouldQuote = true;
     }
     if (this.value === null) {
       valueString = 'null';
@@ -60,10 +63,15 @@ export class RSQLFilterExpression {
     filterString += this.field;
     switch (this.operator) {
       case Operators.Equal:
-        filterString += '==' + encodeURIComponent(this.quote(valueString));
+        filterString +=
+          '=in=' + encodeURIComponent(shouldQuote ? this.quote(valueString) : valueString);
         break;
       case Operators.NotEqual:
-        filterString += '!=' + encodeURIComponent(this.quote(valueString));
+        filterString +=
+          '!=' + encodeURIComponent(shouldQuote ? this.quote(valueString) : valueString);
+        break;
+      case Operators.Like:
+        filterString += '==' + encodeURIComponent(this.quote(valueString));
         break;
       case Operators.GreaterThan:
         filterString += encodeURIComponent('>') + valueString;

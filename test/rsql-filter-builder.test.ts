@@ -8,7 +8,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
+    expect(list.build()).toEqual(`blah=in=${encodeURIComponent('"123"')}`);
   });
 
   it('should build a single filter properly by casting the result of the RSQLFilterBuilder to the RSQLFilter interface', () => {
@@ -17,7 +17,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
+    expect(list.build()).toEqual(`blah=in=${encodeURIComponent('"123"')}`);
   });
 
   it('should build a set of filters with an and', () => {
@@ -30,9 +30,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(
+      `(blah=in=${encodeURIComponent('"123"')}${encodeURIComponent(
         ' and '
-      )}name==${encodeURIComponent('"John"')})`
+      )}name=in=${encodeURIComponent('"John"')})`
     );
   });
 
@@ -46,9 +46,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(' or ')}name==${encodeURIComponent(
-        '"John"'
-      )})`
+      `(blah=in=${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}name=in=${encodeURIComponent('"John"')})`
     );
   });
 
@@ -62,9 +62,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(' or ')}name==${encodeURIComponent(
-        '"John"'
-      )})`
+      `(blah=in=${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}name=in=${encodeURIComponent('"John"')})`
     );
 
     builder.clear();
@@ -72,7 +72,7 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
+    expect(list.build()).toEqual(`blah=in=${encodeURIComponent('"123"')}`);
   });
 
   it('should handle the clear function for complex functions', () => {
@@ -85,9 +85,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah==${encodeURIComponent('"123"')}${encodeURIComponent(' or ')}name==${encodeURIComponent(
-        '"John"'
-      )})`
+      `(blah=in=${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}name=in=${encodeURIComponent('"John"')})`
     );
 
     builder.clear();
@@ -99,9 +99,9 @@ describe('RSQLFilterBuilder', () => {
       .equalTo('John')
       .toList();
     expect(list.build()).toEqual(
-      `(blah2==${encodeURIComponent('"123"')}${encodeURIComponent(
+      `(blah2=in=${encodeURIComponent('"123"')}${encodeURIComponent(
         ' or '
-      )}name2==${encodeURIComponent('"John"')})`
+      )}name2=in=${encodeURIComponent('"John"')})`
     );
   });
 
@@ -111,14 +111,14 @@ describe('RSQLFilterBuilder', () => {
       .column('blah')
       .equalTo('123')
       .toList();
-    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
+    expect(list.build()).toEqual(`blah=in=${encodeURIComponent('"123"')}`);
 
     builder.clear();
     list = builder
       .column('blah')
       .equalTo(true)
       .toList();
-    expect(list.build()).toEqual(`blah==${encodeURIComponent('"true"')}`);
+    expect(list.build()).toEqual(`blah=in=true`);
   });
 
   it('should build the proper string for the notEqualTo function', () => {
@@ -128,6 +128,15 @@ describe('RSQLFilterBuilder', () => {
       .notEqualTo('123')
       .toList();
     expect(list.build()).toEqual(`blah!=${encodeURIComponent('"123"')}`);
+  });
+
+  it('should build the proper string for the like function', () => {
+    let builder: RSQLFilter = new RSQLFilterBuilder();
+    let list = builder
+      .column('blah')
+      .like('123')
+      .toList();
+    expect(list.build()).toEqual(`blah==${encodeURIComponent('"123"')}`);
   });
 
   it('should build the proper string for the contains function', () => {
