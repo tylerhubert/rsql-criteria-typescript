@@ -63,6 +63,12 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     return this;
   }
 
+  like(value: string): RSQLCompleteExpression {
+    this.operator = Operators.Like;
+    this.value = value;
+    return this;
+  }
+
   contains(value: string | number | Date): RSQLCompleteExpression {
     this.operator = Operators.Contains;
     this.value = value;

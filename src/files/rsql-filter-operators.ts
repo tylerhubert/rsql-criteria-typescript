@@ -1,6 +1,7 @@
 export enum Operators {
   Equal = 'eq',
   NotEqual = 'neq',
+  Like = 'like',
   IsNull = 'isnull',
   IsNotNull = 'isnotnull',
   GreaterThan = 'gt',

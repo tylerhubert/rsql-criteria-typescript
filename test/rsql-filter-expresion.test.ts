@@ -4,37 +4,48 @@ import { Operators } from '../src/files/rsql-filter-operators';
 describe('RSQLFilterExpression', () => {
   it('should handle the Equals operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.Equal, '123');
-    expect(ex.build()).toEqual(`code==${encodeURIComponent('"123"')}`);
+    expect(ex.build()).toEqual(`code=in=${encodeURIComponent('"123"')}`);
 
     ex = new RSQLFilterExpression('code', Operators.Equal, false);
-    expect(ex.build()).toEqual(`code==${encodeURIComponent('"false"')}`);
+    expect(ex.build()).toEqual(`code=in=false`);
 
     ex = new RSQLFilterExpression('code', Operators.Equal, 'ab"c');
-    expect(ex.build()).toEqual(`code==%22ab%5C%22c%22`);
+    expect(ex.build()).toEqual(`code=in=%22ab%5C%22c%22`);
 
     ex = new RSQLFilterExpression('code', Operators.Equal, 'ab\\c');
-    expect(ex.build()).toEqual(`code==%22ab%5C%5Cc%22`);
+    expect(ex.build()).toEqual(`code=in=%22ab%5C%5Cc%22`);
 
     ex = new RSQLFilterExpression('code', Operators.Equal, 'ab\\"c');
-    expect(ex.build()).toEqual(`code==%22ab%5C%5C%5C%22c%22`);
+    expect(ex.build()).toEqual(`code=in=%22ab%5C%5C%5C%22c%22`);
+
+    ex = new RSQLFilterExpression('code', Operators.Equal, 123);
+    expect(ex.build()).toEqual(`code=in=123`);
   });
 
   it('should handle the Equals operator when our value is null', () => {
     let ex = new RSQLFilterExpression('code', Operators.Equal, null);
-    expect(ex.build()).toEqual(`code==${encodeURIComponent('"null"')}`);
+    expect(ex.build()).toEqual(`code=in=null`);
   });
 
   it('should handle the NotEquals operator when our value is null', () => {
     let ex = new RSQLFilterExpression('code', Operators.NotEqual, null);
-    expect(ex.build()).toEqual(`code!=${encodeURIComponent('"null"')}`);
+    expect(ex.build()).toEqual(`code!=null`);
   });
 
   it('should handle the NotEquals operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.NotEqual, '123');
     expect(ex.build()).toEqual(`code!=${encodeURIComponent('"123"')}`);
 
-    ex = new RSQLFilterExpression('code', Operators.Equal, true);
-    expect(ex.build()).toEqual(`code==${encodeURIComponent('"true"')}`);
+    ex = new RSQLFilterExpression('code', Operators.NotEqual, true);
+    expect(ex.build()).toEqual(`code!=true`);
+  });
+
+  it('should handle the Like operator', () => {
+    let ex = new RSQLFilterExpression('code', Operators.Like, 'abc');
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"abc"')}`);
+
+    ex = new RSQLFilterExpression('code', Operators.Like, 'ab_d');
+    expect(ex.build()).toEqual(`code==${encodeURIComponent('"ab_d"')}`);
   });
 
   it('should handle the IsNull operator', () => {

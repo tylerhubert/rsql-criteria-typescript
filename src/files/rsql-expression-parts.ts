@@ -8,6 +8,7 @@ export interface RSQLFilter {
 export interface RSQLColumn {
   equalTo(value: string | Date | number | boolean): RSQLCompleteExpression;
   notEqualTo(value: string | Date | number | boolean): RSQLCompleteExpression;
+  like(value: string): RSQLCompleteExpression;
   contains(value: string | Date | number): RSQLCompleteExpression;
   doesNotContain(value: string | Date | number): RSQLCompleteExpression;
   startsWith(value: string): RSQLCompleteExpression;
