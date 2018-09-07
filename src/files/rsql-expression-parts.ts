@@ -2,6 +2,7 @@ import { RSQLFilterList } from '..';
 
 export interface RSQLFilter {
   column(columnName: string): RSQLColumn;
+  group(expression: RSQLCompleteExpression): RSQLCompleteExpression;
   clear(): void;
 }
 
