@@ -264,4 +264,33 @@ describe('RSQLFilterBuilder', () => {
       .toList();
     expect(list.build()).toEqual(`blah!=${encodeURIComponent('""')}`);
   });
+
+  it('should handle the group capabilities', () => {
+    let builder: RSQLFilter = new RSQLFilterBuilder();
+    let list = builder
+      .column('blah')
+      .equalTo('123')
+      .or()
+      .column('name')
+      .equalTo('John')
+      .or()
+      .group(
+        new RSQLFilterBuilder()
+          .column('test1')
+          .equalTo('test1')
+          .and()
+          .column('test2')
+          .equalTo('test2')
+      )
+      .toList();
+    expect(list.build()).toEqual(
+      `(blah=in=${encodeURIComponent('"123"')}${encodeURIComponent(
+        ' or '
+      )}name=in=${encodeURIComponent('"John"')}${encodeURIComponent(
+        ' or '
+      )}(test1=in=${encodeURIComponent('"test1"')}${encodeURIComponent(
+        ' and '
+      )}test2=in=${encodeURIComponent('"test2"')}))`
+    );
+  });
 });
