@@ -10,11 +10,15 @@ export class RSQLFilterList {
   }
 
   public and(filter: RSQLFilterExpression | RSQLFilterList) {
-    this.andList.push(filter);
+    if (filter !== undefined && filter !== null && filter.build() !== '') {
+      this.andList.push(filter);
+    }
   }
 
   public or(filter: RSQLFilterExpression | RSQLFilterList) {
-    this.orList.push(filter);
+    if (filter !== undefined && filter !== null && filter.build() !== '') {
+      this.orList.push(filter);
+    }
   }
 
   /**

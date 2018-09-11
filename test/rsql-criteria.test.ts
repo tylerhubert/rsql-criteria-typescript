@@ -115,6 +115,23 @@ describe('RSQLCriteria test', () => {
     );
   });
 
+  it('should allow you to combine two RSQLCriteria instances with an "and" while disregarding blank filters', () => {
+    let criteria1 = new RSQLCriteria();
+    criteria1.pageSize = 10;
+    criteria1.pageNumber = 1;
+    criteria1.orderBy.add('code', 'asc');
+    criteria1.filters.and(new RSQLFilterExpression('code', Operators.Contains, 'a'));
+
+    let criteria2 = new RSQLCriteria();
+
+    criteria1.and(criteria2);
+    expect(criteria1.build()).toEqual(
+      `$where=code==${encodeURIComponent('"*a*"')}&$orderBy=${encodeURIComponent(
+        'code asc'
+      )}&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
+    );
+  });
+
   it('should allow you to combine two RSQLCriteria instances with an or', () => {
     let criteria1 = new RSQLCriteria();
     criteria1.pageSize = 10;
@@ -130,6 +147,23 @@ describe('RSQLCriteria test', () => {
       `$where=(code==${encodeURIComponent('"*a*"')}${encodeURIComponent(
         ' or '
       )}description==${encodeURIComponent('"*b*"')})&$orderBy=${encodeURIComponent(
+        'code asc'
+      )}&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
+    );
+  });
+
+  it('should allow you to combine two RSQLCriteria instances with an "or" while disregarding blank filters', () => {
+    let criteria1 = new RSQLCriteria();
+    criteria1.pageSize = 10;
+    criteria1.pageNumber = 1;
+    criteria1.orderBy.add('code', 'asc');
+    criteria1.filters.and(new RSQLFilterExpression('code', Operators.Contains, 'a'));
+
+    let criteria2 = new RSQLCriteria();
+
+    criteria1.or(criteria2);
+    expect(criteria1.build()).toEqual(
+      `$where=code==${encodeURIComponent('"*a*"')}&$orderBy=${encodeURIComponent(
         'code asc'
       )}&$pageSize=10&$includeTotalCount=true&$pageNumber=1`
     );
