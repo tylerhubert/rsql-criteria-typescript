@@ -49,11 +49,35 @@ export class RSQLFilterExpression {
       valueString = quotedValues.join(',');
     }
     if (this.value instanceof Date) {
-      valueString = [
-        this.value.getFullYear(),
-        this.value.getMonth() + 1,
-        this.value.getDate()
-      ].join('-');
+      let year = this.value.getFullYear();
+      let month = this.value.getMonth() + 1;
+      let date = this.value.getDate();
+
+      // Ensure that all year values have four digits, and that month and
+      // date values have two digits, by adding leading zeros as necessary
+      let yearString = String(year);
+      let monthString = String(month);
+      let dateString = String(date);
+
+      if (year === 0) {
+        yearString = '0000';
+      } else if (year < 10) {
+        yearString = `000${yearString}`;
+      } else if (year < 100) {
+        yearString = `00${yearString}`;
+      } else if (year < 1000) {
+        yearString = `0${yearString}`;
+      }
+
+      if (month < 10) {
+        monthString = `0${monthString}`;
+      }
+
+      if (date < 10) {
+        dateString = `0${dateString}`;
+      }
+
+      valueString = [yearString, monthString, dateString].join('-');
       shouldQuote = true;
     }
     if (this.value === null) {

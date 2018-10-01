@@ -63,13 +63,6 @@ describe('RSQLFilterExpression', () => {
     expect(ex.build()).toEqual(`code${encodeURIComponent('>')}123`);
   });
 
-  it('should handle the GreaterThan operator for a date object', () => {
-    // dates months are 0 indexed
-    let today = new Date(2018, 10, 25);
-    let ex = new RSQLFilterExpression('code', Operators.GreaterThan, today);
-    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-11-25`);
-  });
-
   it('should handle the GreaterThanEqualTo operator', () => {
     let ex = new RSQLFilterExpression('code', Operators.GreaterThanEqualTo, 123);
     expect(ex.build()).toEqual(`code${encodeURIComponent('>=')}123`);
@@ -144,5 +137,48 @@ describe('RSQLFilterExpression', () => {
         '"false"'
       )},${encodeURIComponent('"456"')})`
     );
+  });
+
+  it('should handle Date objects', () => {
+    // date months are 0 indexed
+    let date = new Date(2018, 9, 21);
+    let ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-10-21`);
+
+    // years should always have four digits, and months and dates should always have two
+    date = new Date(0, 8, 9);
+    date.setFullYear(0);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}0000-09-09`);
+
+    date = new Date(4, 8, 9);
+    date.setFullYear(9);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}0009-09-09`);
+
+    date = new Date(4, 8, 10);
+    date.setFullYear(10);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}0010-09-10`);
+
+    date = new Date(4, 9, 9);
+    date.setFullYear(99);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}0099-10-09`);
+
+    date = new Date(4, 9, 10);
+    date.setFullYear(100);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}0100-10-10`);
+
+    date = new Date(4, 9, 9);
+    date.setFullYear(999);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}0999-10-09`);
+
+    date = new Date(4, 9, 9);
+    date.setFullYear(1000);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}1000-10-09`);
   });
 });
