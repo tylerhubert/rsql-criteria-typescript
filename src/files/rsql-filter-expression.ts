@@ -139,6 +139,8 @@ export class RSQLFilterExpression {
       case Operators.IsNotNull:
         filterString += '!=null';
         break;
+      default:
+        filterString += encodeURIComponent(this.operator) + valueString;
     }
 
     return filterString;

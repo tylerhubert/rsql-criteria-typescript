@@ -20,6 +20,7 @@ export interface RSQLColumn {
   lessThanOrEqualTo(value: string | Date | number): RSQLCompleteExpression;
   in(value: Array<string | number | boolean>): RSQLCompleteExpression;
   notIn(value: Array<string | number | boolean>): RSQLCompleteExpression;
+  custom(op: string, value: string | Date | number | boolean): RSQLCompleteExpression;
   isNull(): RSQLCompleteExpression;
   isNotNull(): RSQLCompleteExpression;
   isEmpty(): RSQLCompleteExpression;

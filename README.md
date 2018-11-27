@@ -49,6 +49,18 @@ let queryStringPart = list.build();
 // returns blah=="123"
 ```
 
+
+### Builder with Custom Operators
+
+```javascript
+let value: 123;
+let builder: RSQLFilter = new RSQLFilterBuilder();
+let list = builder.column('blah').custom('=myCustomOp=', `someFunctionOnServer(${value})`).toList();
+let queryStringPart = list.build();
+// returns =myCustomOp="someFunctionOnServer(123)"
+```
+
+
 Or a more complex example that shows chaining of the expressions:
 ```javascript
 let rsql: RSQLCriteria = new RSQLCriteria();
@@ -70,6 +82,7 @@ criteria1.and(criteria2);
 criteria1.build();
 //returns $pageSize=10 instead of pageSize = 5
 ```
+
 
 ### A note on function names
 This library has been tested against a SQL Server backend and some irregularities have been found.  A RSQL `==` operation turns into a `LIKE` in SQL Server so that wildcard characters are available for use.  However, in most other languages an `equals` operation is an exact match.  To handle this, the `Operators.Equal` and `RSQLFilterBuilder.equalTo` methods will create an `=in=` RSQL string.  This doesn't allow wildcards to be used in and will intuitively make more sense for those of us that are used to equals meaning exactly equal to.  Wildcard characters are still allowed to be passed in, but they will be interpretted as the characters themselves and not wildcards.

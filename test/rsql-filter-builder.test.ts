@@ -265,6 +265,15 @@ describe('RSQLFilterBuilder', () => {
     expect(list.build()).toEqual(`blah!=${encodeURIComponent('""')}`);
   });
 
+  it('should build the proper string with a custom operator', () => {
+    let builder: RSQLFilter = new RSQLFilterBuilder();
+    let list = builder
+      .column('blah')
+      .custom('>=', '123')
+      .toList();
+    expect(list.build()).toEqual(`blah${encodeURIComponent('>=')}123`);
+  });
+
   it('should handle the group capabilities', () => {
     let builder: RSQLFilter = new RSQLFilterBuilder();
     let list = builder

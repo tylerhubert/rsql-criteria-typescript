@@ -135,6 +135,11 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     return this;
   }
 
+  custom(op: string, value: string | Date | number | boolean): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, op as Operators, value));
+    return this;
+  }
+
   and(): RSQLFilter {
     this.connector = 'and';
     return this;
