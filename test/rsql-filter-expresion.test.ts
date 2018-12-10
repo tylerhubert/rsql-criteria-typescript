@@ -1,5 +1,6 @@
 import { RSQLFilterExpression } from '../src/files/rsql-filter-expression';
 import { Operators } from '../src/files/rsql-filter-operators';
+import { TestOperator } from './test-operator';
 
 describe('RSQLFilterExpression', () => {
   it('should handle the Equals operator', () => {
@@ -180,5 +181,10 @@ describe('RSQLFilterExpression', () => {
     date.setFullYear(1000);
     ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
     expect(ex.build()).toEqual(`code${encodeURIComponent('>')}1000-10-09`);
+  });
+
+  it('should handle adding custom operations', () => {
+    let ex = new RSQLFilterExpression('code', new TestOperator(), 'abc');
+    expect(ex.build()).toEqual(`code=custom=${encodeURIComponent('"abc"')}`);
   });
 });

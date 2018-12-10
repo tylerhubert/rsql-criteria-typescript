@@ -1,5 +1,6 @@
 import { RSQLFilterBuilder } from '../src/files/rsql-filter-builder';
 import { RSQLFilter } from '../src';
+import { TestOperator } from './test-operator';
 
 describe('RSQLFilterBuilder', () => {
   it('should build a single filter properly', () => {
@@ -292,5 +293,14 @@ describe('RSQLFilterBuilder', () => {
         ' and '
       )}test2=in=${encodeURIComponent('"test2"')}))`
     );
+  });
+
+  it('should allow the use of custom operations', () => {
+    let builder: RSQLFilter = new RSQLFilterBuilder();
+    let list = builder
+      .column('blah')
+      .custom(new TestOperator(), 'support')
+      .toList();
+    expect(list.build()).toEqual(`blah=custom=${encodeURIComponent('"support"')}`);
   });
 });

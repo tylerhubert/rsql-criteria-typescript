@@ -1,4 +1,4 @@
-import { RSQLFilterList, Operators, RSQLFilterExpression } from '..';
+import { RSQLFilterList, Operators, RSQLFilterExpression, CustomOperator } from '..';
 import { RSQLFilter, RSQLColumn, RSQLCompleteExpression } from './rsql-expression-parts';
 
 /**
@@ -132,6 +132,14 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
 
   isNotEmpty(): RSQLCompleteExpression {
     this.addToList(new RSQLFilterExpression(this.columnName, Operators.IsNotEmpty, undefined));
+    return this;
+  }
+
+  custom(
+    op: CustomOperator,
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined
+  ) {
+    this.addToList(new RSQLFilterExpression(this.columnName, op, value));
     return this;
   }
 

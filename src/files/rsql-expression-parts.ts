@@ -1,4 +1,4 @@
-import { RSQLFilterList } from '..';
+import { RSQLFilterList, CustomOperator } from '..';
 
 export interface RSQLFilter {
   column(columnName: string): RSQLColumn;
@@ -24,6 +24,10 @@ export interface RSQLColumn {
   isNotNull(): RSQLCompleteExpression;
   isEmpty(): RSQLCompleteExpression;
   isNotEmpty(): RSQLCompleteExpression;
+  custom(
+    op: CustomOperator,
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined
+  ): RSQLCompleteExpression;
 }
 
 export interface RSQLCompleteExpression {
