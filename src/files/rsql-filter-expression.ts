@@ -1,18 +1,27 @@
 import { isBoolean, isNumber, isString } from 'util';
 import { Operators } from './rsql-filter-operators';
+import { CustomOperator } from '..';
 
 export class RSQLFilterExpression {
   public field: string;
-  public operator: Operators;
+  public operator: Operators | undefined;
+  public customOperator: CustomOperator | undefined;
   public value: string | Array<string | number | boolean> | Date | number | boolean | undefined;
 
   constructor(
     field: string,
-    operator: Operators,
+    operator: Operators | CustomOperator,
     value: string | Array<string | number | boolean> | Date | number | boolean | undefined
   ) {
     this.field = field;
-    this.operator = operator;
+    if (Object.values(Operators).includes(operator)) {
+      this.operator = operator as Operators;
+      this.customOperator = undefined;
+    } else {
+      this.operator = undefined;
+      this.customOperator = operator as CustomOperator;
+    }
+
     this.value = value;
   }
 
@@ -41,9 +50,9 @@ export class RSQLFilterExpression {
           return i;
         } else if (isString(i)) {
           let val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-          return encodeURIComponent(this.quote(val));
+          return encodeURIComponent(quote(val));
         } else {
-          return encodeURIComponent(this.quote(i));
+          return encodeURIComponent(quote(i));
         }
       });
       valueString = quotedValues.join(',');
@@ -85,66 +94,70 @@ export class RSQLFilterExpression {
     }
     // construct the filter string
     filterString += this.field;
-    switch (this.operator) {
-      case Operators.Equal:
-        filterString +=
-          '=in=' + encodeURIComponent(shouldQuote ? this.quote(valueString) : valueString);
-        break;
-      case Operators.NotEqual:
-        filterString +=
-          '!=' + encodeURIComponent(shouldQuote ? this.quote(valueString) : valueString);
-        break;
-      case Operators.Like:
-        filterString += '==' + encodeURIComponent(this.quote(valueString));
-        break;
-      case Operators.GreaterThan:
-        filterString += encodeURIComponent('>') + valueString;
-        break;
-      case Operators.GreaterThanEqualTo:
-        filterString += encodeURIComponent('>=') + valueString;
-        break;
-      case Operators.LessThan:
-        filterString += encodeURIComponent('<') + valueString;
-        break;
-      case Operators.LessThanEqualTo:
-        filterString += encodeURIComponent('<=') + valueString;
-        break;
-      case Operators.StartsWith:
-        filterString += '==' + encodeURIComponent(this.quote(`${valueString}*`));
-        break;
-      case Operators.EndsWith:
-        filterString += '==' + encodeURIComponent(this.quote(`*${valueString}`));
-        break;
-      case Operators.Contains:
-        filterString += '==' + encodeURIComponent(this.quote(`*${valueString}*`));
-        break;
-      case Operators.DoesNotContain:
-        filterString += '!=' + encodeURIComponent(this.quote(`*${valueString}*`));
-        break;
-      case Operators.In:
-        filterString += '=in=(' + valueString + ')';
-        break;
-      case Operators.NotIn:
-        filterString += '=out=(' + valueString + ')';
-        break;
-      case Operators.IsEmpty:
-        filterString += '==' + encodeURIComponent('""');
-        break;
-      case Operators.IsNotEmpty:
-        filterString += '!=' + encodeURIComponent('""');
-        break;
-      case Operators.IsNull:
-        filterString += '==null';
-        break;
-      case Operators.IsNotNull:
-        filterString += '!=null';
-        break;
+
+    if (this.customOperator !== undefined) {
+      filterString += this.customOperator.convertToRSQLString(this.value, valueString, shouldQuote);
+    } else {
+      switch (this.operator) {
+        case Operators.Equal:
+          filterString +=
+            '=in=' + encodeURIComponent(shouldQuote ? quote(valueString) : valueString);
+          break;
+        case Operators.NotEqual:
+          filterString += '!=' + encodeURIComponent(shouldQuote ? quote(valueString) : valueString);
+          break;
+        case Operators.Like:
+          filterString += '==' + encodeURIComponent(quote(valueString));
+          break;
+        case Operators.GreaterThan:
+          filterString += encodeURIComponent('>') + valueString;
+          break;
+        case Operators.GreaterThanEqualTo:
+          filterString += encodeURIComponent('>=') + valueString;
+          break;
+        case Operators.LessThan:
+          filterString += encodeURIComponent('<') + valueString;
+          break;
+        case Operators.LessThanEqualTo:
+          filterString += encodeURIComponent('<=') + valueString;
+          break;
+        case Operators.StartsWith:
+          filterString += '==' + encodeURIComponent(quote(`${valueString}*`));
+          break;
+        case Operators.EndsWith:
+          filterString += '==' + encodeURIComponent(quote(`*${valueString}`));
+          break;
+        case Operators.Contains:
+          filterString += '==' + encodeURIComponent(quote(`*${valueString}*`));
+          break;
+        case Operators.DoesNotContain:
+          filterString += '!=' + encodeURIComponent(quote(`*${valueString}*`));
+          break;
+        case Operators.In:
+          filterString += '=in=(' + valueString + ')';
+          break;
+        case Operators.NotIn:
+          filterString += '=out=(' + valueString + ')';
+          break;
+        case Operators.IsEmpty:
+          filterString += '==' + encodeURIComponent('""');
+          break;
+        case Operators.IsNotEmpty:
+          filterString += '!=' + encodeURIComponent('""');
+          break;
+        case Operators.IsNull:
+          filterString += '==null';
+          break;
+        case Operators.IsNotNull:
+          filterString += '!=null';
+          break;
+      }
     }
 
     return filterString;
   }
+}
 
-  private quote(value: string | boolean): string {
-    return `"${value}"`;
-  }
+export function quote(value: string | boolean): string {
+  return `"${value}"`;
 }

@@ -57,7 +57,27 @@ rsql.filters.and(builder.column('blah').equalTo('123')
                     .or().column('test').equalTo('456').toList());
 rsql.build();
 // returns $where=(blah=="123" or test=="456")
- ```
+```
+
+### Adding Custom Operators
+You can add your own Custom Operator if you need as well.  An interface of `CustomOperator` is provided by the library.  Create a new class that extends
+that interface and implement the `convertToRSQLString` method.  The method is passed the original value, the formatted string value that the library would
+use, and the boolean the library uses to know if it should quote a value or not.  The quote method is exported for your use as well.
+```javascript
+export class TestOperator implements CustomOperator {
+  convertToRSQLString(value: string | number | boolean | (string | number | boolean)[] | Date, valueString: string, shouldQuote: boolean): string {
+    return "=custom=" + encodeURIComponent(shouldQuote ? quote(valueString) : valueString);
+  }
+}
+```
+And then you can use it either directly with the `RSQLFilterExpression` constructor, or with the `RSQLFilterBuilder` with the `custom` method.
+```javascript
+let list = new RSQLFilterBuilder()
+      .column('blah')
+      .custom(new TestOperator(), "support")
+      .toList();
+//returns blah=custom="support"
+```
 
 ### Combining multiple RSQLCriteria Instances
 You can combine multiple RSQLCriteria instances by the `and` or `or` functions that are available.  The major thing to know about this is that the criteria that you call `and` or `or` on will be the one that the pagination and order by parts will be taken from.  The combination is a way to combine the filters together in a nice fashion.

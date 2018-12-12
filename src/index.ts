@@ -6,3 +6,4 @@ export * from './files/rsql-order-by-list';
 export * from './files/rsql-order-by-expression';
 export * from './files/rsql-filter-builder';
 export * from './files/rsql-expression-parts';
+export * from './files/rsql-custom-operator';
