@@ -14,12 +14,12 @@ export class RSQLFilterExpression {
     value: string | Array<string | number | boolean> | Date | number | boolean | undefined
   ) {
     this.field = field;
-    if (Object.values(Operators).includes(operator)) {
-      this.operator = operator as Operators;
-      this.customOperator = undefined;
-    } else {
+    if (typeof operator === 'object' && this.instanceOfCustomOperator(operator)) {
       this.operator = undefined;
       this.customOperator = operator as CustomOperator;
+    } else {
+      this.operator = operator as Operators;
+      this.customOperator = undefined;
     }
 
     this.value = value;
@@ -155,6 +155,10 @@ export class RSQLFilterExpression {
     }
 
     return filterString;
+  }
+
+  private instanceOfCustomOperator(object: any): object is CustomOperator {
+    return 'convertToRSQLString' in object;
   }
 }
 
