@@ -1,4 +1,5 @@
 import { RSQLFilterList, CustomOperator } from '..';
+import { RSQLFilterExpressionOptions } from './rsql-filter-expression-options';
 
 export interface RSQLFilter {
   column(columnName: string): RSQLColumn;
@@ -7,23 +8,53 @@ export interface RSQLFilter {
 }
 
 export interface RSQLColumn {
-  equalTo(value: string | Date | number | boolean): RSQLCompleteExpression;
-  notEqualTo(value: string | Date | number | boolean): RSQLCompleteExpression;
-  like(value: string): RSQLCompleteExpression;
-  contains(value: string | Date | number): RSQLCompleteExpression;
-  doesNotContain(value: string | Date | number): RSQLCompleteExpression;
-  startsWith(value: string): RSQLCompleteExpression;
-  endsWith(value: string): RSQLCompleteExpression;
-  greaterThan(value: string | Date | number): RSQLCompleteExpression;
-  greaterThanOrEqualTo(value: string | Date | number): RSQLCompleteExpression;
-  lessThan(value: string | Date | number): RSQLCompleteExpression;
-  lessThanOrEqualTo(value: string | Date | number): RSQLCompleteExpression;
-  in(value: Array<string | number | boolean>): RSQLCompleteExpression;
-  notIn(value: Array<string | number | boolean>): RSQLCompleteExpression;
-  isNull(): RSQLCompleteExpression;
-  isNotNull(): RSQLCompleteExpression;
-  isEmpty(): RSQLCompleteExpression;
-  isNotEmpty(): RSQLCompleteExpression;
+  equalTo(
+    value: string | Date | number | boolean,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  notEqualTo(
+    value: string | Date | number | boolean,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  like(value: string, options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
+  contains(
+    value: string | Date | number,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  doesNotContain(
+    value: string | Date | number,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  startsWith(value: string, options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
+  endsWith(value: string, options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
+  greaterThan(
+    value: string | Date | number,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  greaterThanOrEqualTo(
+    value: string | Date | number,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  lessThan(
+    value: string | Date | number,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  lessThanOrEqualTo(
+    value: string | Date | number,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  in(
+    value: Array<string | number | boolean>,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  notIn(
+    value: Array<string | number | boolean>,
+    options: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression;
+  isNull(options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
+  isNotNull(options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
+  isEmpty(options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
+  isNotEmpty(options: RSQLFilterExpressionOptions): RSQLCompleteExpression;
   custom(
     op: CustomOperator,
     value: string | Array<string | number | boolean> | Date | number | boolean | undefined

@@ -1,5 +1,6 @@
 import { RSQLFilterList, Operators, RSQLFilterExpression, CustomOperator } from '..';
 import { RSQLFilter, RSQLColumn, RSQLCompleteExpression } from './rsql-expression-parts';
+import { RSQLFilterExpressionOptions } from './rsql-filter-expression-options';
 
 /**
  * Allows for the building of RSQLFilterExpressions in a readable way.
@@ -50,96 +51,141 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     this.connector = 'and';
   }
 
-  equalTo(value: string | Date | number | boolean): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.Equal, value));
+  equalTo(
+    value: string | Date | number | boolean,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.Equal, value, options));
     return this;
   }
 
-  notEqualTo(value: string | number | Date | boolean): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.NotEqual, value));
+  notEqualTo(
+    value: string | number | Date | boolean,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.NotEqual, value, options));
     return this;
   }
 
-  like(value: string): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.Like, value));
+  like(value: string, options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.Like, value, options));
     return this;
   }
 
-  contains(value: string | number | Date): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.Contains, value));
+  contains(
+    value: string | number | Date,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.Contains, value, options));
     return this;
   }
 
-  doesNotContain(value: string | number | Date): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.DoesNotContain, value));
+  doesNotContain(
+    value: string | number | Date,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.DoesNotContain, value, options)
+    );
     return this;
   }
 
-  startsWith(value: string): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.StartsWith, value));
+  startsWith(value: string, options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.StartsWith, value, options));
     return this;
   }
 
-  endsWith(value: string): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.EndsWith, value));
+  endsWith(value: string, options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.EndsWith, value, options));
     return this;
   }
 
-  greaterThan(value: string | number | Date): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.GreaterThan, value));
+  greaterThan(
+    value: string | number | Date,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.GreaterThan, value, options)
+    );
     return this;
   }
 
-  greaterThanOrEqualTo(value: string | number | Date): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.GreaterThanEqualTo, value));
+  greaterThanOrEqualTo(
+    value: string | number | Date,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.GreaterThanEqualTo, value, options)
+    );
     return this;
   }
 
-  lessThan(value: string | number | Date): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.LessThan, value));
+  lessThan(
+    value: string | number | Date,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.LessThan, value, options));
     return this;
   }
 
-  lessThanOrEqualTo(value: string | number | Date): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.LessThanEqualTo, value));
+  lessThanOrEqualTo(
+    value: string | number | Date,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.LessThanEqualTo, value, options)
+    );
     return this;
   }
 
-  in(value: Array<string | number | boolean>): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.In, value));
+  in(
+    value: Array<string | number | boolean>,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.In, value, options));
     return this;
   }
 
-  notIn(value: Array<string | number | boolean>): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.NotIn, value));
+  notIn(
+    value: Array<string | number | boolean>,
+    options?: RSQLFilterExpressionOptions
+  ): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.NotIn, value, options));
     return this;
   }
 
-  isNull(): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.IsNull, undefined));
+  isNull(options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(new RSQLFilterExpression(this.columnName, Operators.IsNull, undefined, options));
     return this;
   }
 
-  isNotNull(): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.IsNotNull, undefined));
+  isNotNull(options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.IsNotNull, undefined, options)
+    );
     return this;
   }
 
-  isEmpty(): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.IsEmpty, undefined));
+  isEmpty(options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.IsEmpty, undefined, options)
+    );
     return this;
   }
 
-  isNotEmpty(): RSQLCompleteExpression {
-    this.addToList(new RSQLFilterExpression(this.columnName, Operators.IsNotEmpty, undefined));
+  isNotEmpty(options?: RSQLFilterExpressionOptions): RSQLCompleteExpression {
+    this.addToList(
+      new RSQLFilterExpression(this.columnName, Operators.IsNotEmpty, undefined, options)
+    );
     return this;
   }
 
   custom(
     op: CustomOperator,
-    value: string | Array<string | number | boolean> | Date | number | boolean | undefined
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined,
+    options?: RSQLFilterExpressionOptions
   ) {
-    this.addToList(new RSQLFilterExpression(this.columnName, op, value));
+    this.addToList(new RSQLFilterExpression(this.columnName, op, value, options));
     return this;
   }
 

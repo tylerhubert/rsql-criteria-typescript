@@ -6,7 +6,7 @@
 
 
 ## Installation
-Install via NPM
+Install via npm
 ```bash
 npm install rsql-criteria-typescript
 ```
@@ -19,9 +19,10 @@ import { RSQLCriteria, RSQLFilterExpression, Operators } from 'rsql-criteria-typ
 
 Add your own criteria and call `build()` to create it!
 ```javascript
-let rsql: RSQLCriteria = new RSQLCriteria();
-rsql.filters.add(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
-console.log(rsql.build());
+let rsql = new RSQLCriteria();
+rsql.filters.and(new RSQLFilterExpression('code', Operators.Equal, 'abc'));
+rsql.build()
+// returns $where=code=in=%22abc%22 (URL encoded)
 ```
 
 There are build methods on most things, so feel free to use whatever part you need.
@@ -35,7 +36,7 @@ The `RSQLCriteria.build()` method will generate a query string with the followin
 
 These can be overridden by passing in the prefixes you would like when creating the `RSQLCriteria` object.
 ```javascript
-let rsql: RSQLCriteria = new RSQLCriteria('filterBy', 'order');
+let rsql = new RSQLCriteria('filterBy', 'order');
 ```
 
 ### RSQLFilterBuilder
@@ -43,20 +44,20 @@ A filter builder is included as well.  You can choose to use this if you prefer 
 the filter expressions.
 
 ```javascript
-let builder: RSQLFilter = new RSQLFilterBuilder();
-let list = builder.column('blah').equalTo('123').toList();
-let queryStringPart = list.build();
-// returns blah=="123"
+let builder = new RSQLFilterBuilder();
+let list = builder.column('blah').greaterThan(123).toList();
+list.build();
+// returns blah>123 (URL encoded)
 ```
 
 Or a more complex example that shows chaining of the expressions:
 ```javascript
-let rsql: RSQLCriteria = new RSQLCriteria();
-let builder: RSQLFilter = new RSQLFilterBuilder();
-rsql.filters.and(builder.column('blah').equalTo('123')
-                    .or().column('test').equalTo('456').toList());
+let rsql = new RSQLCriteria();
+let builder = new RSQLFilterBuilder();
+rsql.filters.and(builder.column('blah').equalTo(123)
+                    .or().column('test').equalTo('abc').toList());
 rsql.build();
-// returns $where=(blah=="123" or test=="456")
+// returns $where=(blah=in=123 or test=in="abc") (URL encoded)
 ```
 
 ### Adding Custom Operators
@@ -76,7 +77,7 @@ let list = new RSQLFilterBuilder()
       .column('blah')
       .custom(new TestOperator(), "support")
       .toList();
-//returns blah=custom="support"
+//returns blah=custom="support" (URL encoded)
 ```
 
 ### Combining multiple RSQLCriteria Instances
@@ -88,11 +89,11 @@ let criteria2 = new RSQLCriteria();
 criteria2.pageSize = 5;
 criteria1.and(criteria2);
 criteria1.build();
-//returns $pageSize=10 instead of pageSize = 5
+// returns $pageSize=10 instead of pageSize = 5
 ```
 
 ### A note on function names
-This library has been tested against a SQL Server backend and some irregularities have been found.  A RSQL `==` operation turns into a `LIKE` in SQL Server so that wildcard characters are available for use.  However, in most other languages an `equals` operation is an exact match.  To handle this, the `Operators.Equal` and `RSQLFilterBuilder.equalTo` methods will create an `=in=` RSQL string.  This doesn't allow wildcards to be used in and will intuitively make more sense for those of us that are used to equals meaning exactly equal to.  Wildcard characters are still allowed to be passed in, but they will be interpretted as the characters themselves and not wildcards.
+This library has been tested against a SQL Server backend and some irregularities have been found.  A RSQL `==` operation turns into a `LIKE` in SQL Server so that wildcard characters are available for use.  However, in most other languages an `equals` operation is an exact match.  To handle this, the `Operators.Equal` and `RSQLFilterBuilder.equalTo` methods will create an `=in=` RSQL string.  This doesn't allow wildcards to be used in and will intuitively make more sense for those of us that are used to equals meaning exactly equal to.  Wildcard characters are still allowed to be passed in, but they will be interpreted as the characters themselves and not wildcards.
 
 To allow wildcards to be used, another operation and function are available.  `Operators.Like` and `RSQLFilterBuilder.like` will use the RSQL `==` and allow wildcard characters to be passed along.
 

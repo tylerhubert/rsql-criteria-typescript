@@ -1,4 +1,5 @@
 import { isBoolean, isNumber, isString } from 'util';
+import { RSQLFilterExpressionOptions } from './rsql-filter-expression-options';
 import { Operators } from './rsql-filter-operators';
 import { CustomOperator } from '..';
 
@@ -7,11 +8,13 @@ export class RSQLFilterExpression {
   public operator: Operators | undefined;
   public customOperator: CustomOperator | undefined;
   public value: string | Array<string | number | boolean> | Date | number | boolean | undefined;
+  public options: RSQLFilterExpressionOptions;
 
   constructor(
     field: string,
     operator: Operators | CustomOperator,
-    value: string | Array<string | number | boolean> | Date | number | boolean | undefined
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined,
+    options: RSQLFilterExpressionOptions = { includeTimestamp: false }
   ) {
     this.field = field;
     if (typeof operator === 'object' && this.instanceOfCustomOperator(operator)) {
@@ -23,6 +26,7 @@ export class RSQLFilterExpression {
     }
 
     this.value = value;
+    this.options = options;
   }
 
   /**
@@ -58,35 +62,12 @@ export class RSQLFilterExpression {
       valueString = quotedValues.join(',');
     }
     if (this.value instanceof Date) {
-      let year = this.value.getFullYear();
-      let month = this.value.getMonth() + 1;
-      let date = this.value.getDate();
-
-      // Ensure that all year values have four digits, and that month and
-      // date values have two digits, by adding leading zeros as necessary
-      let yearString = String(year);
-      let monthString = String(month);
-      let dateString = String(date);
-
-      if (year === 0) {
-        yearString = '0000';
-      } else if (year < 10) {
-        yearString = `000${yearString}`;
-      } else if (year < 100) {
-        yearString = `00${yearString}`;
-      } else if (year < 1000) {
-        yearString = `0${yearString}`;
+      if (this.options.includeTimestamp) {
+        valueString = this.buildDateString(this.value, true) + this.buildTimestamp(this.value);
+      } else {
+        valueString = this.buildDateString(this.value, false);
       }
 
-      if (month < 10) {
-        monthString = `0${monthString}`;
-      }
-
-      if (date < 10) {
-        dateString = `0${dateString}`;
-      }
-
-      valueString = [yearString, monthString, dateString].join('-');
       shouldQuote = true;
     }
     if (this.value === null) {
@@ -159,6 +140,60 @@ export class RSQLFilterExpression {
 
   private instanceOfCustomOperator(object: any): object is CustomOperator {
     return 'convertToRSQLString' in object;
+  }
+
+  private buildDateString(dateObject: Date, useUTC: boolean): string {
+    let year;
+    let month;
+    let date;
+
+    if (useUTC) {
+      year = dateObject.getUTCFullYear();
+      month = dateObject.getUTCMonth() + 1;
+      date = dateObject.getUTCDate();
+    } else {
+      year = dateObject.getFullYear();
+      month = dateObject.getMonth() + 1;
+      date = dateObject.getDate();
+    }
+
+    let yearString = this.numberToString(year, 4);
+    let monthString = this.numberToString(month, 2);
+    let dateString = this.numberToString(date, 2);
+
+    return [yearString, monthString, dateString].join('-');
+  }
+
+  /**
+   * Returns a timestamp in the ISO 8601 format for the given Date object, using UTC values (i.e. 'T'HH:mm:ss.SSS'Z').
+   */
+  private buildTimestamp(dateObject: Date): string {
+    let hours = dateObject.getUTCHours();
+    let minutes = dateObject.getUTCMinutes();
+    let seconds = dateObject.getUTCSeconds();
+    let millis = dateObject.getUTCMilliseconds();
+
+    let hoursString = this.numberToString(hours, 2);
+    let minutesString = this.numberToString(minutes, 2);
+    let secondsString = this.numberToString(seconds, 2);
+    let millisString = this.numberToString(millis, 3);
+
+    return 'T' + [hoursString, minutesString, secondsString].join(':') + '.' + millisString + 'Z';
+  }
+
+  /**
+   * Returns a string of the given number, ensuring the total number of digits
+   * is as specified by left-padding with zeros if necessary.
+   * e.g. numberToString(8, 3) === '008'
+   */
+  private numberToString(num: number, digitCount: number): string {
+    let s = String(num);
+
+    while (s.length < digitCount) {
+      s = '0' + s;
+    }
+
+    return s;
   }
 }
 
