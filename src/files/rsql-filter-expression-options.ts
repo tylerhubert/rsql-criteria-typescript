@@ -1,3 +1,3 @@
 export class RSQLFilterExpressionOptions {
-  public includeTimestamp = false;
+  public includeTimestamp? = false;
 }
