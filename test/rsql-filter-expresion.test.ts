@@ -140,7 +140,7 @@ describe('RSQLFilterExpression', () => {
     );
   });
 
-  it('should handle Date objects', () => {
+  it('should handle Date objects when timestamps are not desired', () => {
     // date months are 0 indexed
     let date = new Date(2018, 9, 21);
     let ex = new RSQLFilterExpression('code', Operators.GreaterThan, date);
@@ -183,8 +183,51 @@ describe('RSQLFilterExpression', () => {
     expect(ex.build()).toEqual(`code${encodeURIComponent('>')}1000-10-09`);
   });
 
+  it('should handle Date objects when timestamps are desired', () => {
+    let options = { includeTimestamp: true };
+
+    // date months are 0 indexed
+    let date = buildUTCDate(2018, 9, 21, 0, 0, 0, 0);
+    let ex = new RSQLFilterExpression('code', Operators.GreaterThan, date, options);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-10-21T00:00:00.000Z`);
+
+    date = buildUTCDate(2018, 9, 21, 1, 7, 2, 1);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date, options);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-10-21T01:07:02.001Z`);
+
+    date = buildUTCDate(2018, 9, 21, 10, 17, 20, 75);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date, options);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-10-21T10:17:20.075Z`);
+
+    date = buildUTCDate(2018, 9, 21, 23, 59, 59, 999);
+    ex = new RSQLFilterExpression('code', Operators.GreaterThan, date, options);
+    expect(ex.build()).toEqual(`code${encodeURIComponent('>')}2018-10-21T23:59:59.999Z`);
+  });
+
   it('should handle adding custom operations', () => {
     let ex = new RSQLFilterExpression('code', new TestOperator(), 'abc');
     expect(ex.build()).toEqual(`code=custom=${encodeURIComponent('"abc"')}`);
   });
 });
+
+function buildUTCDate(
+  year: number,
+  month: number,
+  date: number,
+  hours: number,
+  minutes: number,
+  seconds: number,
+  millis: number
+): Date {
+  let dateObject = new Date(year, month, date);
+
+  dateObject.setUTCFullYear(year);
+  dateObject.setUTCMonth(month);
+  dateObject.setUTCDate(date);
+  dateObject.setUTCHours(hours);
+  dateObject.setUTCMinutes(minutes);
+  dateObject.setUTCSeconds(seconds);
+  dateObject.setUTCMilliseconds(millis);
+
+  return dateObject;
+}
