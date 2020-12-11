@@ -10,7 +10,7 @@ export interface CustomOperator {
    * @param shouldQuote Boolean passed down to say if this value should be surrounded by quotes.
    */
   convertToRSQLString(
-    value: string | Array<string | number | boolean> | Date | number | boolean | undefined,
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined | null,
     valueString: string,
     shouldQuote: boolean
   ): string;
