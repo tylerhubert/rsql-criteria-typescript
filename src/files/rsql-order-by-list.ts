@@ -8,7 +8,7 @@ export class RSQLOrderByList {
   }
 
   public add(field: string, direction: 'asc' | 'desc'): void {
-    let o = new RSQLOrderByExpression(field, direction);
+    const o = new RSQLOrderByExpression(field, direction);
     this.orderByList.push(o);
   }
 
@@ -20,7 +20,7 @@ export class RSQLOrderByList {
     let str = '';
     let includeConnector = false;
     if (this.orderByList.length > 0) {
-      for (let o of this.orderByList) {
+      for (const o of this.orderByList) {
         str +=
           (includeConnector ? encodeURIComponent(', ') : '') +
           encodeURIComponent(`${o.field} ${o.direction}`);

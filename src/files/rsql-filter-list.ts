@@ -9,12 +9,14 @@ export class RSQLFilterList {
     this.orList = [];
   }
 
+  /* eslint-disable @typescript-eslint/explicit-module-boundary-types*/
   public and(filter: RSQLFilterExpression | RSQLFilterList) {
     if (filter !== undefined && filter !== null && filter.build() !== '') {
       this.andList.push(filter);
     }
   }
 
+  /* eslint-disable @typescript-eslint/explicit-module-boundary-types*/
   public or(filter: RSQLFilterExpression | RSQLFilterList) {
     if (filter !== undefined && filter !== null && filter.build() !== '') {
       this.orList.push(filter);
@@ -28,19 +30,19 @@ export class RSQLFilterList {
    */
   public build(): string {
     let filterString = '';
-    let includeParens = this.andList.length + this.orList.length > 1;
+    const includeParens = this.andList.length + this.orList.length > 1;
     let includeConnector = false;
     if (includeParens) {
       filterString += '(';
     }
-    for (let filter of this.andList) {
+    for (const filter of this.andList) {
       if (includeConnector) {
         filterString += encodeURIComponent(' and ');
       }
       filterString += filter.build();
       includeConnector = true;
     }
-    for (let filter of this.orList) {
+    for (const filter of this.orList) {
       if (includeConnector) {
         filterString += encodeURIComponent(' or ');
       }

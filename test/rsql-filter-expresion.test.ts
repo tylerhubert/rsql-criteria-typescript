@@ -24,12 +24,12 @@ describe('RSQLFilterExpression', () => {
   });
 
   it('should handle the Equals operator when our value is null', () => {
-    let ex = new RSQLFilterExpression('code', Operators.Equal, null);
+    const ex = new RSQLFilterExpression('code', Operators.Equal, null);
     expect(ex.build()).toEqual(`code=in=null`);
   });
 
   it('should handle the NotEquals operator when our value is null', () => {
-    let ex = new RSQLFilterExpression('code', Operators.NotEqual, null);
+    const ex = new RSQLFilterExpression('code', Operators.NotEqual, null);
     expect(ex.build()).toEqual(`code!=null`);
   });
 
@@ -50,62 +50,62 @@ describe('RSQLFilterExpression', () => {
   });
 
   it('should handle the IsNull operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.IsNull, '123');
+    const ex = new RSQLFilterExpression('code', Operators.IsNull, '123');
     expect(ex.build()).toEqual('code==null');
   });
 
   it('should handle the IsNotNull operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.IsNotNull, '123');
+    const ex = new RSQLFilterExpression('code', Operators.IsNotNull, '123');
     expect(ex.build()).toEqual('code!=null');
   });
 
   it('should handle the GreaterThan operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.GreaterThan, 123);
+    const ex = new RSQLFilterExpression('code', Operators.GreaterThan, 123);
     expect(ex.build()).toEqual(`code${encodeURIComponent('>')}123`);
   });
 
   it('should handle the GreaterThanEqualTo operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.GreaterThanEqualTo, 123);
+    const ex = new RSQLFilterExpression('code', Operators.GreaterThanEqualTo, 123);
     expect(ex.build()).toEqual(`code${encodeURIComponent('>=')}123`);
   });
 
   it('should handle the LessThan operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.LessThan, 123);
+    const ex = new RSQLFilterExpression('code', Operators.LessThan, 123);
     expect(ex.build()).toEqual(`code${encodeURIComponent('<')}123`);
   });
 
   it('should handle the LessThanEqualTo operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.LessThanEqualTo, 123);
+    const ex = new RSQLFilterExpression('code', Operators.LessThanEqualTo, 123);
     expect(ex.build()).toEqual(`code${encodeURIComponent('<=')}123`);
   });
 
   it('should handle the StartsWith operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.StartsWith, '123');
+    const ex = new RSQLFilterExpression('code', Operators.StartsWith, '123');
     expect(ex.build()).toEqual(`code==${encodeURIComponent('"123*"')}`);
   });
 
   it('should handle the EndsWith operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.EndsWith, '123');
+    const ex = new RSQLFilterExpression('code', Operators.EndsWith, '123');
     expect(ex.build()).toEqual(`code==${encodeURIComponent('"*123"')}`);
   });
 
   it('should handle the Contains operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.Contains, '123');
+    const ex = new RSQLFilterExpression('code', Operators.Contains, '123');
     expect(ex.build()).toEqual(`code==${encodeURIComponent('"*123*"')}`);
   });
 
   it('should handle the DoesNotContain operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.DoesNotContain, '123');
+    const ex = new RSQLFilterExpression('code', Operators.DoesNotContain, '123');
     expect(ex.build()).toEqual(`code!=${encodeURIComponent('"*123*"')}`);
   });
 
   it('should handle the IsEmpty operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.IsEmpty, '123');
+    const ex = new RSQLFilterExpression('code', Operators.IsEmpty, '123');
     expect(ex.build()).toEqual('code==%22%22');
   });
 
   it('should handle the IsNotEmpty operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.IsNotEmpty, '123');
+    const ex = new RSQLFilterExpression('code', Operators.IsNotEmpty, '123');
     expect(ex.build()).toEqual('code!=%22%22');
   });
 
@@ -120,19 +120,19 @@ describe('RSQLFilterExpression', () => {
   });
 
   it('should handle the In operator with only numbers', () => {
-    let ex = new RSQLFilterExpression('code', Operators.In, [123, 456]);
+    const ex = new RSQLFilterExpression('code', Operators.In, [123, 456]);
     expect(ex.build()).toEqual('code=in=(123,456)');
   });
 
   it('should handle the In operator with numbers, strings, and booleans', () => {
-    let ex = new RSQLFilterExpression('code', Operators.In, ['123', 456, true]);
+    const ex = new RSQLFilterExpression('code', Operators.In, ['123', 456, true]);
     expect(ex.build()).toEqual(
       `code=in=(${encodeURIComponent('"123"')},456,${encodeURIComponent('"true"')})`
     );
   });
 
   it('should handle the NotIn operator', () => {
-    let ex = new RSQLFilterExpression('code', Operators.NotIn, ['123', false, '456']);
+    const ex = new RSQLFilterExpression('code', Operators.NotIn, ['123', false, '456']);
     expect(ex.build()).toEqual(
       `code=out=(${encodeURIComponent('"123"')},${encodeURIComponent(
         '"false"'
@@ -184,7 +184,7 @@ describe('RSQLFilterExpression', () => {
   });
 
   it('should handle Date objects when timestamps are desired', () => {
-    let options = { includeTimestamp: true };
+    const options = { includeTimestamp: true };
 
     // date months are 0 indexed
     let date = buildUTCDate(2018, 9, 21, 0, 0, 0, 0);
@@ -205,7 +205,7 @@ describe('RSQLFilterExpression', () => {
   });
 
   it('should handle adding custom operations', () => {
-    let ex = new RSQLFilterExpression('code', new TestOperator(), 'abc');
+    const ex = new RSQLFilterExpression('code', new TestOperator(), 'abc');
     expect(ex.build()).toEqual(`code=custom=${encodeURIComponent('"abc"')}`);
   });
 });
@@ -219,7 +219,7 @@ function buildUTCDate(
   seconds: number,
   millis: number
 ): Date {
-  let dateObject = new Date(year, month, date);
+  const dateObject = new Date(year, month, date);
 
   dateObject.setUTCFullYear(year);
   dateObject.setUTCMonth(month);

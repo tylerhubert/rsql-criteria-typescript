@@ -8,7 +8,7 @@ export class RSQLCriteria {
   public orderBy: RSQLOrderByList;
   public filters: RSQLFilterList;
   public pageSize?: number;
-  public includeTotalCount: boolean = true;
+  public includeTotalCount = true;
   public pageNumber?: number;
 
   constructor(
@@ -43,12 +43,12 @@ export class RSQLCriteria {
    * Combines the keywords with their appropriate clauses to create the string.
    */
   public build(): string {
-    let queryStringParts: string[] = [];
-    let whereClause = this.filters.build();
+    const queryStringParts: string[] = [];
+    const whereClause = this.filters.build();
     if (whereClause !== '') {
       queryStringParts.push(`${this.whereKeyword}=${whereClause}`);
     }
-    let orderByClause = this.orderBy.build();
+    const orderByClause = this.orderBy.build();
     if (orderByClause !== '') {
       queryStringParts.push(`${this.orderByKeyword}=${orderByClause}`);
     }

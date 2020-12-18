@@ -7,13 +7,13 @@ export class RSQLFilterExpression {
   public field: string;
   public operator: Operators | undefined;
   public customOperator: CustomOperator | undefined;
-  public value: string | Array<string | number | boolean> | Date | number | boolean | undefined;
+  public value: string | Array<string | number | boolean> | Date | number | boolean | undefined | null;
   public options: RSQLFilterExpressionOptions;
 
   constructor(
     field: string,
     operator: Operators | CustomOperator,
-    value: string | Array<string | number | boolean> | Date | number | boolean | undefined,
+    value: string | Array<string | number | boolean> | Date | number | boolean | undefined | null,
     options: RSQLFilterExpressionOptions = { includeTimestamp: false }
   ) {
     this.field = field;
@@ -36,7 +36,7 @@ export class RSQLFilterExpression {
     let filterString = '';
     let shouldQuote = false;
     // convert the value into an appropriate string.
-    let valueString: string = '';
+    let valueString = '';
     if (isString(this.value)) {
       valueString = this.value;
       valueString = valueString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
@@ -49,11 +49,11 @@ export class RSQLFilterExpression {
       valueString = this.value ? 'true' : 'false';
     }
     if (this.value instanceof Array) {
-      let quotedValues = this.value.filter(i => i !== undefined).map(i => {
+      const quotedValues = this.value.filter(i => i !== undefined).map(i => {
         if (isNumber(i)) {
           return i;
         } else if (isString(i)) {
-          let val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+          const val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
           return encodeURIComponent(quote(val));
         } else {
           return encodeURIComponent(quote(i));
@@ -138,6 +138,7 @@ export class RSQLFilterExpression {
     return filterString;
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   private instanceOfCustomOperator(object: any): object is CustomOperator {
     return 'convertToRSQLString' in object;
   }
@@ -157,9 +158,9 @@ export class RSQLFilterExpression {
       date = dateObject.getDate();
     }
 
-    let yearString = this.numberToString(year, 4);
-    let monthString = this.numberToString(month, 2);
-    let dateString = this.numberToString(date, 2);
+    const yearString = this.numberToString(year, 4);
+    const monthString = this.numberToString(month, 2);
+    const dateString = this.numberToString(date, 2);
 
     return [yearString, monthString, dateString].join('-');
   }
@@ -168,15 +169,15 @@ export class RSQLFilterExpression {
    * Returns a timestamp in the ISO 8601 format for the given Date object, using UTC values (i.e. 'T'HH:mm:ss.SSS'Z').
    */
   private buildTimestamp(dateObject: Date): string {
-    let hours = dateObject.getUTCHours();
-    let minutes = dateObject.getUTCMinutes();
-    let seconds = dateObject.getUTCSeconds();
-    let millis = dateObject.getUTCMilliseconds();
+    const hours = dateObject.getUTCHours();
+    const minutes = dateObject.getUTCMinutes();
+    const seconds = dateObject.getUTCSeconds();
+    const millis = dateObject.getUTCMilliseconds();
 
-    let hoursString = this.numberToString(hours, 2);
-    let minutesString = this.numberToString(minutes, 2);
-    let secondsString = this.numberToString(seconds, 2);
-    let millisString = this.numberToString(millis, 3);
+    const hoursString = this.numberToString(hours, 2);
+    const minutesString = this.numberToString(minutes, 2);
+    const secondsString = this.numberToString(seconds, 2);
+    const millisString = this.numberToString(millis, 3);
 
     return 'T' + [hoursString, minutesString, secondsString].join(':') + '.' + millisString + 'Z';
   }

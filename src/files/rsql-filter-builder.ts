@@ -180,6 +180,7 @@ export class RSQLFilterBuilder implements RSQLFilter, RSQLColumn, RSQLCompleteEx
     return this;
   }
 
+  /* eslint-disable @typescript-eslint/explicit-module-boundary-types*/
   custom(
     op: CustomOperator,
     value: string | Array<string | number | boolean> | Date | number | boolean | undefined,
