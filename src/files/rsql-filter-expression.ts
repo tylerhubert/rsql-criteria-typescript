@@ -1,4 +1,3 @@
-import { isBoolean, isNumber, isString } from 'util';
 import { RSQLFilterExpressionOptions } from './rsql-filter-expression-options';
 import { Operators } from './rsql-filter-operators';
 import { CustomOperator } from '..';
@@ -7,7 +6,14 @@ export class RSQLFilterExpression {
   public field: string;
   public operator: Operators | undefined;
   public customOperator: CustomOperator | undefined;
-  public value: string | Array<string | number | boolean> | Date | number | boolean | undefined | null;
+  public value:
+    | string
+    | Array<string | number | boolean>
+    | Date
+    | number
+    | boolean
+    | undefined
+    | null;
   public options: RSQLFilterExpressionOptions;
 
   constructor(
@@ -37,28 +43,30 @@ export class RSQLFilterExpression {
     let shouldQuote = false;
     // convert the value into an appropriate string.
     let valueString = '';
-    if (isString(this.value)) {
+    if (typeof this.value === 'string') {
       valueString = this.value;
       valueString = valueString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
       shouldQuote = true;
     }
-    if (isNumber(this.value)) {
+    if (typeof this.value === 'number') {
       valueString = this.value.toString();
     }
-    if (isBoolean(this.value)) {
+    if (typeof this.value === 'boolean') {
       valueString = this.value ? 'true' : 'false';
     }
     if (this.value instanceof Array) {
-      const quotedValues = this.value.filter(i => i !== undefined).map(i => {
-        if (isNumber(i)) {
-          return i;
-        } else if (isString(i)) {
-          const val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-          return encodeURIComponent(quote(val));
-        } else {
-          return encodeURIComponent(quote(i));
-        }
-      });
+      const quotedValues = this.value
+        .filter((i) => i !== undefined)
+        .map((i) => {
+          if (typeof i === 'number') {
+            return i;
+          } else if (typeof i === 'string') {
+            const val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+            return encodeURIComponent(quote(val));
+          } else {
+            return encodeURIComponent(quote(i));
+          }
+        });
       valueString = quotedValues.join(',');
     }
     if (this.value instanceof Date) {
