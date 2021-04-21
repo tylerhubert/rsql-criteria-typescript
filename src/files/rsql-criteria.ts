@@ -1,5 +1,6 @@
 import { RSQLFilterList } from './rsql-filter-list';
 import { RSQLOrderByList } from './rsql-order-by-list';
+import { RSQLBuildOptions } from './rsql-build-options';
 
 /**
  * Main class for bringing together API filtering, sorting and pagination.
@@ -42,9 +43,9 @@ export class RSQLCriteria {
    * Builds the query string that will be needed to send down to the server side API.
    * Combines the keywords with their appropriate clauses to create the string.
    */
-  public build(): string {
+  public build(options: RSQLBuildOptions = { encodeString: true }): string {
     const queryStringParts: string[] = [];
-    const whereClause = this.filters.build();
+    const whereClause = this.filters.build(options);
     if (whereClause !== '') {
       queryStringParts.push(`${this.whereKeyword}=${whereClause}`);
     }
