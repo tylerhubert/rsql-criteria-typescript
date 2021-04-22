@@ -1,6 +1,7 @@
 import { RSQLFilterExpressionOptions } from './rsql-filter-expression-options';
 import { Operators } from './rsql-filter-operators';
 import { CustomOperator } from '..';
+import { RSQLBuildOptions } from './rsql-build-options';
 
 export class RSQLFilterExpression {
   public field: string;
@@ -38,7 +39,7 @@ export class RSQLFilterExpression {
   /**
    * Builds the individual filter expression into the proper format.
    */
-  public build(): string {
+  public build(buildOptions: RSQLBuildOptions = { encodeString: true }): string {
     let filterString = '';
     let shouldQuote = false;
     // convert the value into an appropriate string.
@@ -62,9 +63,9 @@ export class RSQLFilterExpression {
             return i;
           } else if (typeof i === 'string') {
             const val = i.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-            return encodeURIComponent(quote(val));
+            return this.buildValueString(val, true, buildOptions);
           } else {
-            return encodeURIComponent(quote(i));
+            return this.buildValueString(i, true, buildOptions);
           }
         });
       valueString = quotedValues.join(',');
@@ -90,37 +91,43 @@ export class RSQLFilterExpression {
       switch (this.operator) {
         case Operators.Equal:
           filterString +=
-            '=in=' + encodeURIComponent(shouldQuote ? quote(valueString) : valueString);
+            '=in=' + this.buildValueString(valueString, shouldQuote, buildOptions);
           break;
         case Operators.NotEqual:
-          filterString += '!=' + encodeURIComponent(shouldQuote ? quote(valueString) : valueString);
+          filterString +=
+            '!=' + this.buildValueString(valueString, shouldQuote, buildOptions);
           break;
         case Operators.Like:
-          filterString += '==' + encodeURIComponent(quote(valueString));
+          filterString +=
+            '==' + this.buildValueString(valueString, true, buildOptions);
           break;
         case Operators.GreaterThan:
-          filterString += encodeURIComponent('>') + valueString;
+          filterString += this.buildOperandString('>', buildOptions) + valueString;
           break;
         case Operators.GreaterThanEqualTo:
-          filterString += encodeURIComponent('>=') + valueString;
+          filterString += this.buildOperandString('>=', buildOptions) + valueString;
           break;
         case Operators.LessThan:
-          filterString += encodeURIComponent('<') + valueString;
+          filterString += this.buildOperandString('<', buildOptions) + valueString;
           break;
         case Operators.LessThanEqualTo:
-          filterString += encodeURIComponent('<=') + valueString;
+          filterString += this.buildOperandString('<=', buildOptions) + valueString;
           break;
         case Operators.StartsWith:
-          filterString += '==' + encodeURIComponent(quote(`${valueString}*`));
+          filterString +=
+            '==' + this.buildValueString(`${valueString}*`, true, buildOptions);
           break;
         case Operators.EndsWith:
-          filterString += '==' + encodeURIComponent(quote(`*${valueString}`));
+          filterString +=
+            '==' + this.buildValueString(`*${valueString}`, true, buildOptions);
           break;
         case Operators.Contains:
-          filterString += '==' + encodeURIComponent(quote(`*${valueString}*`));
+          filterString +=
+            '==' + this.buildValueString(`*${valueString}*`, true, buildOptions);
           break;
         case Operators.DoesNotContain:
-          filterString += '!=' + encodeURIComponent(quote(`*${valueString}*`));
+          filterString +=
+            '!=' + this.buildValueString(`*${valueString}*`, true, buildOptions);
           break;
         case Operators.In:
           filterString += '=in=(' + valueString + ')';
@@ -129,10 +136,10 @@ export class RSQLFilterExpression {
           filterString += '=out=(' + valueString + ')';
           break;
         case Operators.IsEmpty:
-          filterString += '==' + encodeURIComponent('""');
+          filterString += '==' + this.buildValueString('""', false, buildOptions);
           break;
         case Operators.IsNotEmpty:
-          filterString += '!=' + encodeURIComponent('""');
+          filterString += '!=' + this.buildValueString('""', false, buildOptions);
           break;
         case Operators.IsNull:
           filterString += '==null';
@@ -203,6 +210,18 @@ export class RSQLFilterExpression {
     }
 
     return s;
+  }
+
+  private buildValueString(valueString: string | boolean, shouldQuote: boolean, buildOptions: RSQLBuildOptions): string {
+    return (buildOptions.encodeString
+      ? encodeURIComponent(shouldQuote ? quote(valueString) : valueString.toString())
+      : shouldQuote
+      ? quote(valueString)
+      : valueString.toString());
+  }
+
+  private buildOperandString(operandString: string, buildOptions: RSQLBuildOptions): string {
+    return buildOptions.encodeString ? encodeURIComponent(operandString) : operandString;
   }
 }
 

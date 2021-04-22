@@ -1,4 +1,5 @@
-import { RSQLFilterExpression } from './rsql-filter-expression';
+import { RSQLBuildOptions } from "./rsql-build-options";
+import { RSQLFilterExpression } from "./rsql-filter-expression";
 
 export class RSQLFilterList {
   private andList: Array<RSQLFilterExpression | RSQLFilterList>;
@@ -11,14 +12,14 @@ export class RSQLFilterList {
 
   /* eslint-disable @typescript-eslint/explicit-module-boundary-types*/
   public and(filter: RSQLFilterExpression | RSQLFilterList) {
-    if (filter !== undefined && filter !== null && filter.build() !== '') {
+    if (filter !== undefined && filter !== null && filter.build() !== "") {
       this.andList.push(filter);
     }
   }
 
   /* eslint-disable @typescript-eslint/explicit-module-boundary-types*/
   public or(filter: RSQLFilterExpression | RSQLFilterList) {
-    if (filter !== undefined && filter !== null && filter.build() !== '') {
+    if (filter !== undefined && filter !== null && filter.build() !== "") {
       this.orList.push(filter);
     }
   }
@@ -28,29 +29,29 @@ export class RSQLFilterList {
    * If there is more than one filter expression, it puts
    * parenthesis around the expression.
    */
-  public build(): string {
-    let filterString = '';
+  public build(options: RSQLBuildOptions = { encodeString: true }): string {
+    let filterString = "";
     const includeParens = this.andList.length + this.orList.length > 1;
     let includeConnector = false;
     if (includeParens) {
-      filterString += '(';
+      filterString += "(";
     }
     for (const filter of this.andList) {
       if (includeConnector) {
-        filterString += encodeURIComponent(' and ');
+        filterString += options.encodeString ? encodeURIComponent(" and ") : " and ";
       }
-      filterString += filter.build();
+      filterString += filter.build(options);
       includeConnector = true;
     }
     for (const filter of this.orList) {
       if (includeConnector) {
-        filterString += encodeURIComponent(' or ');
+        filterString += options.encodeString ? encodeURIComponent(" or ") : " or ";
       }
-      filterString += filter.build();
+      filterString += filter.build(options);
       includeConnector = true;
     }
     if (includeParens) {
-      filterString += ')';
+      filterString += ")";
     }
 
     return filterString;

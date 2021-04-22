@@ -92,6 +92,24 @@ criteria1.build();
 // returns $pageSize=10 instead of pageSize = 5
 ```
 
+### Build Options
+An optional `RSQLBuildOptions` object can be passed into each of the `build()` methods to change the behavior of how the strings get built.
+#### encodeString
+`encodeString` can be used to chose whether or not you want the results to be encoded or not.  By default the library WILL encode the resulting string, but if you pass in `{encodeString: false}` to the `build()` method, then the results will not be encoded.  Example:
+```javascript
+const builder: RSQLFilter = new RSQLFilterBuilder();
+const list = builder
+  .column('blah').equalTo('123')
+  .and().column('name').equalTo('John')
+  .toList();
+expect(list.build()).toEqual(
+  `(blah=in=%22123%22%20and%20name=in=%22John%22)`
+);
+expect(list.build({encodeString: false})).toEqual(
+  `(blah=in="123" and name=in="John")`
+);
+```
+
 ### A note on function names
 This library has been tested against a SQL Server backend and some irregularities have been found.  A RSQL `==` operation turns into a `LIKE` in SQL Server so that wildcard characters are available for use.  However, in most other languages an `equals` operation is an exact match.  To handle this, the `Operators.Equal` and `RSQLFilterBuilder.equalTo` methods will create an `=in=` RSQL string.  This doesn't allow wildcards to be used in and will intuitively make more sense for those of us that are used to equals meaning exactly equal to.  Wildcard characters are still allowed to be passed in, but they will be interpreted as the characters themselves and not wildcards.
 
